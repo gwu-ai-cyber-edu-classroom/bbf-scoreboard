@@ -152,12 +152,18 @@ def render_scoreboard(
     fixed: dict,
     build_status: dict,
     unattributed: list,
+    pending: list,
+    self_authored: list,
 ) -> str:
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     lines: list[str] = [
         "# BBF Day Scoreboard",
         "",
         f"_Last updated: {ts}_",
+        "",
+        "Counts reflect **confirmed** breaks only — an issue counts once it is labeled "
+        "`valid` (a team member commented `/repro-confirmed`). Filed-but-unconfirmed issues "
+        "are listed under _Pending_ below, not in the table.",
         "",
         "| Team | Build | Breaks landed | Breaks received | High-sev received | Fixed |",
         "|---|---|---:|---:|---:|---:|",
@@ -171,10 +177,24 @@ def render_scoreboard(
             f"{high_sev_received.get(tid, 0)} | "
             f"{fixed.get(tid, 0)} |"
         )
+
+    # Diagnostics — so no filed issue ever vanishes without explanation.
+    if pending:
+        lines += ["", "## Pending (filed, not yet `/repro-confirmed`)", ""]
+        for repo, num, author in pending:
+            lines.append(f"- {repo}#{num} by `{author}` — needs `/repro-confirmed` to count")
+    if self_authored:
+        lines += ["", "## Self-authored valid breaks (not counted)", ""]
+        for repo, num, author in self_authored:
+            lines.append(
+                f"- {repo}#{num} by `{author}` — you can't score a break against your own repo"
+            )
     if unattributed:
         lines += ["", "## Unattributed issues (author not on any team)", ""]
         for repo, num, author in unattributed:
-            lines.append(f"- {repo}#{num} authored by `{author}`")
+            lines.append(
+                f"- {repo}#{num} authored by `{author}` — add `{author}` to teams.yaml to attribute it"
+            )
     return "\n".join(lines) + "\n"
 
 
@@ -218,6 +238,8 @@ def main() -> int:
     high_sev_received: dict[str, int] = defaultdict(int)
     fixed: dict[str, int] = defaultdict(int)
     unattributed: list = []
+    pending: list = []
+    self_authored: list = []
 
     for t in teams:
         try:
@@ -230,15 +252,20 @@ def main() -> int:
             continue
         for issue in issues:
             labels = {lbl["name"] for lbl in (issue.get("labels") or [])}
-            if "valid" not in labels:
-                continue
             author = (issue.get("author") or {}).get("login") or ""
+            if "valid" not in labels:
+                # Filed but not confirmed. Surface it (unless it was ruled invalid)
+                # so a created issue never silently disappears from the board.
+                if "invalid" not in labels:
+                    pending.append((t["repo"], issue["number"], author))
+                continue
             breaker = login_to_team.get(author)
             if breaker is None:
                 unattributed.append((t["repo"], issue["number"], author))
                 continue
             if breaker == t["id"]:
-                # Sanity guard: a team breaking its own artifact doesn't count.
+                # A break against your own repo doesn't score — but show it.
+                self_authored.append((t["repo"], issue["number"], author))
                 continue
             breaks_landed[breaker] += 1
             breaks_received[t["id"]] += 1
@@ -258,6 +285,8 @@ def main() -> int:
         fixed=fixed,
         build_status=build_status,
         unattributed=unattributed,
+        pending=pending,
+        self_authored=self_authored,
     )
     (ROOT / "SCOREBOARD.md").write_text(output)
     print(f"SCOREBOARD.md updated ({len(output)} bytes).")
