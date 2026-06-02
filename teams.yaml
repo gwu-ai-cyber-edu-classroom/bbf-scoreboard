@@ -17,16 +17,12 @@
 teams:
   - id: phoenix
     name: Team Phoenix
-    repo: gwu-ai-cyber-institute/bbf-team-phoenix
+    repo: gwu-ai-cyber-edu-classroom/bbf-build-target-adamaviv
     members:
-      - alice-doe
-      - bob-smith
-      - carol-jones
-
+      - adamaviv
+      
   - id: griffin
     name: Team Griffin
-    repo: gwu-ai-cyber-institute/bbf-team-griffin
+    repo: gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali
     members:
-      - david-lee
-      - eve-wong
-      - frank-patel
+      - theshizaali
