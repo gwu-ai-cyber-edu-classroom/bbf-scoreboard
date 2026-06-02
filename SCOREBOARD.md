@@ -1,13 +1,13 @@
 # BBF Day Scoreboard
 
-_Last updated: 2026-06-02 19:37 UTC_
+_Last updated: <span class="local-time" data-utc="2026-06-02T20:42:57Z">2026-06-02 20:42 UTC</span>_
 
-Counts reflect **confirmed** breaks only — an issue counts once it is labeled `valid` (a team member commented `/repro-confirmed`). Filed-but-unconfirmed issues are listed under _Pending_ below, not in the table.
+**Breaks received/landed** count **confirmed** breaks only (labeled `valid` after a `/repro-confirmed` comment). **Pending** counts breaks filed against the team but not yet confirmed — they move into the scored columns once confirmed; specific issues are listed under _Pending_ below.
 
-| Team | Build | Breaks landed | Breaks received | High-sev received | Fixed |
-|---|---|---:|---:|---:|---:|
-| theshizaali | success | 0 | 0 | 0 | 0 |
-| adamaviv | success | 0 | 0 | 0 | 0 |
+| Team | Build | Breaks landed | Breaks received | Pending | High-sev received | Fixed |
+|---|---|---:|---:|---:|---:|---:|
+| theshizaali | success | 0 | 0 | 1 | 0 | 0 |
+| adamaviv | success | 0 | 0 | 1 | 0 | 0 |
 
 ## Pending (filed, not yet `/repro-confirmed`)
 
