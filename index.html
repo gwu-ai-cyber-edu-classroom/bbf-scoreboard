@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="30">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BBF Day Scoreboard</title>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.1/github-markdown-light.min.css">
+  <style>
+    body {
+      max-width: 960px;
+      margin: 2em auto;
+      padding: 0 1em;
+      font-family: system-ui, sans-serif;
+    }
+    .markdown-body { padding: 1em 2em; }
+    .markdown-body table { width: 100%; }
+    .markdown-body th, .markdown-body td { padding: 8px 12px; }
+    footer {
+      color: #6e7781;
+      font-size: 0.85em;
+      text-align: center;
+      margin-top: 2em;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+</head>
+<body>
+  <div id="scoreboard" class="markdown-body">Loading...</div>
+  <footer>Auto-refreshes every 30 seconds.</footer>
+  <script>
+    fetch('SCOREBOARD.md?_=' + Date.now())
+      .then(function (r) { return r.text(); })
+      .then(function (t) {
+        document.getElementById('scoreboard').innerHTML = marked.parse(t);
+      })
+      .catch(function (e) {
+        document.getElementById('scoreboard').innerHTML =
+          '<p style="color:#cf222e">Could not load SCOREBOARD.md: ' + e + '</p>';
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+# Example teams.yaml.
+#
+# On the day of the event, gen-teams-yaml.sh regenerates this from the
+# GitHub Teams in the org. You can also edit it manually.
+#
+# Each team needs:
+#   id       slug-style identifier (no spaces)
+#   name     display name (any string)
+#   repo     full GitHub repo path (org/repo)
+#   members  list of GitHub logins
+#
+# The scoring script will reject teams.yaml if:
+#   - a required field is missing
+#   - a login appears in two teams
+#   - a repo or login does not resolve on GitHub
+
+teams:
+  - id: phoenix
+    name: Team Phoenix
+    repo: gwu-ai-cyber-institute/bbf-team-phoenix
+    members:
+      - alice-doe
+      - bob-smith
+      - carol-jones
+
+  - id: griffin
+    name: Team Griffin
+    repo: gwu-ai-cyber-institute/bbf-team-griffin
+    members:
+      - david-lee
+      - eve-wong
+      - frank-patel
