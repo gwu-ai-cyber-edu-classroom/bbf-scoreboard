@@ -33,7 +33,13 @@
     fetch('SCOREBOARD.md?_=' + Date.now())
       .then(function (r) { return r.text(); })
       .then(function (t) {
-        document.getElementById('scoreboard').innerHTML = marked.parse(t);
+        var el = document.getElementById('scoreboard');
+        el.innerHTML = marked.parse(t);
+        // Render the timestamp in the viewer's local timezone.
+        el.querySelectorAll('[data-utc]').forEach(function (span) {
+          var d = new Date(span.getAttribute('data-utc'));
+          if (!isNaN(d.getTime())) { span.textContent = d.toLocaleString(); }
+        });
       })
       .catch(function (e) {
         document.getElementById('scoreboard').innerHTML =

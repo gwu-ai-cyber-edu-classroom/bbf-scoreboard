@@ -166,10 +166,8 @@ def render_scoreboard(
         # is the fallback shown in a raw Markdown view.
         f'_Last updated: <span class="local-time" data-utc="{iso}">{utc_fallback}</span>_',
         "",
-        "**Breaks received/landed** count **confirmed** breaks only (labeled `valid` after a "
-        "`/repro-confirmed` comment). **Pending** counts breaks filed against the team but not yet "
-        "confirmed — they move into the scored columns once confirmed; specific issues are listed "
-        "under _Pending_ below.",
+        "Counts are **confirmed** breaks only — an issue scores once a `/repro-confirmed` comment "
+        "adds the `valid` label. Column definitions are below the table.",
         "",
         "| Team | Build | Breaks landed | Breaks received | Pending | High-sev received | Fixed |",
         "|---|---|---:|---:|---:|---:|---:|",
@@ -184,6 +182,18 @@ def render_scoreboard(
             f"{high_sev_received.get(tid, 0)} | "
             f"{fixed.get(tid, 0)} |"
         )
+
+    lines += [
+        "",
+        "## What the columns mean",
+        "",
+        "- **Build** — status of the team's latest `build-check.yml` run (`success` / `failure` / `no-runs`).",
+        "- **Breaks landed** — confirmed breaks this team filed against *other* teams (offense).",
+        "- **Breaks received** — confirmed breaks *other* teams filed against this team's app (defense).",
+        "- **Pending** — breaks filed against this team but not yet `/repro-confirmed` (not yet scored).",
+        "- **High-sev received** — of the breaks received, how many were self-rated high severity.",
+        "- **Fixed** — received breaks closed by a merged PR (issue labeled `fixed`).",
+    ]
 
     # Diagnostics — so no filed issue ever vanishes without explanation.
     if pending:
