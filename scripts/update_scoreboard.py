@@ -150,16 +150,21 @@ def render_scoreboard(
     breaks_received: dict,
     high_sev_received: dict,
     fixed: dict,
+    pending_received: dict,
     build_status: dict,
     unattributed: list,
     pending: list,
     self_authored: list,
 ) -> str:
-    ts = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    now = datetime.now(timezone.utc)
+    iso = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    utc_fallback = now.strftime("%Y-%m-%d %H:%M UTC")
     lines: list[str] = [
         "# BBF Day Scoreboard",
         "",
-        f"_Last updated: {ts}_",
+        # index.html rewrites this to the viewer's local timezone; the UTC text
+        # is the fallback shown in a raw Markdown view.
+        f'_Last updated: <span class="local-time" data-utc="{iso}">{utc_fallback}</span>_',
         "",
         "Counts reflect **confirmed** breaks only — an issue counts once it is labeled "
         "`valid` (a team member commented `/repro-confirmed`). Filed-but-unconfirmed issues "
