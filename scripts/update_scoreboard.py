@@ -166,12 +166,13 @@ def render_scoreboard(
         # is the fallback shown in a raw Markdown view.
         f'_Last updated: <span class="local-time" data-utc="{iso}">{utc_fallback}</span>_',
         "",
-        "Counts reflect **confirmed** breaks only — an issue counts once it is labeled "
-        "`valid` (a team member commented `/repro-confirmed`). Filed-but-unconfirmed issues "
-        "are listed under _Pending_ below, not in the table.",
+        "**Breaks received/landed** count **confirmed** breaks only (labeled `valid` after a "
+        "`/repro-confirmed` comment). **Pending** counts breaks filed against the team but not yet "
+        "confirmed — they move into the scored columns once confirmed; specific issues are listed "
+        "under _Pending_ below.",
         "",
-        "| Team | Build | Breaks landed | Breaks received | High-sev received | Fixed |",
-        "|---|---|---:|---:|---:|---:|",
+        "| Team | Build | Breaks landed | Breaks received | Pending | High-sev received | Fixed |",
+        "|---|---|---:|---:|---:|---:|---:|",
     ]
     for t in teams:
         tid = t["id"]
@@ -179,6 +180,7 @@ def render_scoreboard(
             f"| {t['name']} | {build_status.get(tid, '?')} | "
             f"{breaks_landed.get(tid, 0)} | "
             f"{breaks_received.get(tid, 0)} | "
+            f"{pending_received.get(tid, 0)} | "
             f"{high_sev_received.get(tid, 0)} | "
             f"{fixed.get(tid, 0)} |"
         )
@@ -244,6 +246,7 @@ def main() -> int:
     fixed: dict[str, int] = defaultdict(int)
     unattributed: list = []
     pending: list = []
+    pending_received: dict[str, int] = defaultdict(int)
     self_authored: list = []
 
     for t in teams:
@@ -263,6 +266,7 @@ def main() -> int:
                 # so a created issue never silently disappears from the board.
                 if "invalid" not in labels:
                     pending.append((t["repo"], issue["number"], author))
+                    pending_received[t["id"]] += 1
                 continue
             breaker = login_to_team.get(author)
             if breaker is None:
@@ -288,6 +292,7 @@ def main() -> int:
         breaks_received=breaks_received,
         high_sev_received=high_sev_received,
         fixed=fixed,
+        pending_received=pending_received,
         build_status=build_status,
         unattributed=unattributed,
         pending=pending,
