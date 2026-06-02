@@ -1,5 +1,8 @@
 # BBF Day Scoreboard
 
-_Waiting for teams.yaml to be populated from the Classroom roster._
+_Last updated: 2026-06-02 18:33 UTC_
 
-Run `gen-teams-yaml.sh <org>` after teams have accepted their Classroom invites.
+| Team | Build | Breaks landed | Breaks received | High-sev received | Fixed |
+|---|---|---:|---:|---:|---:|
+| Team Phoenix | success | 0 | 0 | 0 | 0 |
+| Team Griffin | success | 0 | 0 | 0 | 0 |
