@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Update SCOREBOARD.md from teams.yaml using the `gh` CLI.
+"""Update SCOREBOARD.md (and scores.json) from teams.yaml using the `gh` CLI.
 
 Logic:
   1. Load teams.yaml. Validate schema. Resolve every repo and every member
@@ -10,8 +10,10 @@ Logic:
        - increment breaks_landed for the author's team
        - increment breaks_received for the repo's team
        - increment severity / fixed counters as labels indicate
-  4. For each team repo, fetch the latest `build-check.yml` run conclusion.
-  5. Render SCOREBOARD.md.
+  4. Compute an overall accumulated Score per team (tunable weights below).
+  5. For each team repo, fetch the latest `build-check.yml` run conclusion.
+  6. Render SCOREBOARD.md (leaderboard, sorted by Score) and append the current
+     scores to scores.json for the live time-series chart in index.html.
 
 Usage:
     python update_scoreboard.py [--validate-only]
@@ -34,6 +36,15 @@ except ImportError:
     sys.exit(2)
 
 ROOT = Path(__file__).resolve().parent.parent
+SCORES_JSON = ROOT / "scores.json"
+
+# --- Scoring weights (tune freely) -------------------------------------------
+# Overall Score is a single accumulated number per team.
+SCORE_LANDED = 10      # per confirmed break you filed against another team (offense)
+SCORE_HIGH_SEV = 5     # extra, per high-severity break you landed
+SCORE_FIXED = 5        # per break against you that you closed with a merged PR
+SCORE_RECEIVED = -5    # per confirmed break others landed on you (a hole in your app)
+MAX_HISTORY_POINTS = 1000  # cap scores.json growth
 
 
 def gh_json(args: list[str]) -> object:
@@ -44,9 +55,7 @@ def gh_json(args: list[str]) -> object:
 
 def gh_check(args: list[str]) -> bool:
     """Run `gh <args>`; return True if exit 0, False otherwise."""
-    return (
-        subprocess.run(["gh", *args], capture_output=True).returncode == 0
-    )
+    return subprocess.run(["gh", *args], capture_output=True).returncode == 0
 
 
 def validate(teams: list[dict]) -> list[str]:
@@ -80,10 +89,8 @@ def validate(teams: list[dict]) -> list[str]:
                 )
             else:
                 seen_logins[login] = tid
-        # Resolve repo
         if repo and not gh_check(["repo", "view", repo]):
             problems.append(f"repo not found on GitHub: {repo}")
-        # Resolve each login
         for login in members:
             if not gh_check(["api", f"users/{login}"]):
                 problems.append(f"login not found on GitHub: {login}")
@@ -123,12 +130,7 @@ FORM_FIELD_HEADINGS = {
 
 
 def parse_form_field(body: str | None, field_id: str) -> str | None:
-    """Extract a field value from a GitHub issue-form body.
-
-    Issue forms render as Markdown sections separated by `### <Label>` headings,
-    followed by a blank line and the value. This pulls the first non-empty line
-    after the heading whose text matches FORM_FIELD_HEADINGS[field_id].
-    """
+    """Extract a field value from a GitHub issue-form body."""
     if not body:
         return None
     label = FORM_FIELD_HEADINGS.get(field_id, field_id)
@@ -136,16 +138,32 @@ def parse_form_field(body: str | None, field_id: str) -> str | None:
     match = pattern.search(body)
     if not match:
         return None
-    rest = body[match.end():].splitlines()
-    for line in rest:
+    for line in body[match.end():].splitlines():
         stripped = line.strip()
         if stripped:
             return stripped
     return None
 
 
+def append_history(teams: list[dict], score: dict, iso: str) -> None:
+    """Append the current per-team scores to scores.json for the live chart."""
+    try:
+        data = json.loads(SCORES_JSON.read_text())
+        if not isinstance(data, dict):
+            raise ValueError
+    except (FileNotFoundError, json.JSONDecodeError, ValueError):
+        data = {"teams": [], "history": []}
+    data["teams"] = [{"id": t["id"], "name": t["name"]} for t in teams]
+    data.setdefault("history", []).append(
+        {"t": iso, "scores": {t["id"]: score.get(t["id"], 0) for t in teams}}
+    )
+    data["history"] = data["history"][-MAX_HISTORY_POINTS:]
+    SCORES_JSON.write_text(json.dumps(data, indent=2) + "\n")
+
+
 def render_scoreboard(
     teams: list[dict],
+    score: dict,
     breaks_landed: dict,
     breaks_received: dict,
     high_sev_received: dict,
@@ -155,10 +173,10 @@ def render_scoreboard(
     unattributed: list,
     pending: list,
     self_authored: list,
+    iso: str,
+    utc_fallback: str,
 ) -> str:
-    now = datetime.now(timezone.utc)
-    iso = now.strftime("%Y-%m-%dT%H:%M:%SZ")
-    utc_fallback = now.strftime("%Y-%m-%d %H:%M UTC")
+    ranked = sorted(teams, key=lambda t: score.get(t["id"], 0), reverse=True)
     lines: list[str] = [
         "# BBF Day Scoreboard",
         "",
@@ -166,16 +184,17 @@ def render_scoreboard(
         # is the fallback shown in a raw Markdown view.
         f'_Last updated: <span class="local-time" data-utc="{iso}">{utc_fallback}</span>_',
         "",
-        "Counts are **confirmed** breaks only — an issue scores once a `/repro-confirmed` comment "
-        "adds the `valid` label. Column definitions are below the table.",
+        "Ranked by overall **Score** (accumulated). Counts are **confirmed** breaks only — an "
+        "issue scores once a `/repro-confirmed` comment adds the `valid` label. Column "
+        "definitions are below the table.",
         "",
-        "| Team | Build | Breaks landed | Breaks received | Pending | High-sev received | Fixed |",
-        "|---|---|---:|---:|---:|---:|---:|",
+        "| Rank | Team | Score | Build | Breaks landed | Breaks received | Pending | High-sev received | Fixed |",
+        "|---:|---|---:|---|---:|---:|---:|---:|---:|",
     ]
-    for t in teams:
+    for i, t in enumerate(ranked, start=1):
         tid = t["id"]
         lines.append(
-            f"| {t['name']} | {build_status.get(tid, '?')} | "
+            f"| {i} | {t['name']} | **{score.get(tid, 0)}** | {build_status.get(tid, '?')} | "
             f"{breaks_landed.get(tid, 0)} | "
             f"{breaks_received.get(tid, 0)} | "
             f"{pending_received.get(tid, 0)} | "
@@ -187,15 +206,30 @@ def render_scoreboard(
         "",
         "## What the columns mean",
         "",
+        f"- **Score** — overall accumulated points: **+{SCORE_LANDED}** per break landed, "
+        f"**+{SCORE_HIGH_SEV}** extra per high-severity break landed, **+{SCORE_FIXED}** per fix, "
+        f"**{SCORE_RECEIVED}** per break received. (Weights are tunable in `update_scoreboard.py`.)",
         "- **Build** — status of the team's latest `build-check.yml` run (`success` / `failure` / `no-runs`).",
         "- **Breaks landed** — confirmed breaks this team filed against *other* teams (offense).",
         "- **Breaks received** — confirmed breaks *other* teams filed against this team's app (defense).",
         "- **Pending** — breaks filed against this team but not yet `/repro-confirmed` (not yet scored).",
         "- **High-sev received** — of the breaks received, how many were self-rated high severity.",
         "- **Fixed** — received breaks closed by a merged PR (issue labeled `fixed`).",
+        "",
+        "## Acting on a break (issue comments)",
+        "",
+        "Put the command on the **first line** of a comment on the Break Report issue:",
+        "",
+        "- `/repro-confirmed` — *(the targeted team)* you reproduced it against your running app. "
+        "Applies the `valid` label and it scores. Add a line on what you observed.",
+        "- `/repro-failed` — *(the targeted team)* you could **not** reproduce it. Applies `invalid`; "
+        "say what you tried so the breaker can clarify.",
+        "- `/out-of-scope` — *(facilitators only)* rule a break invalid (unsafe content, off-protocol).",
+        "",
+        "Fixes: open a PR whose body says `closes #N`; when it merges, the issue is auto-labeled "
+        "`fixed`.",
     ]
 
-    # Diagnostics — so no filed issue ever vanishes without explanation.
     if pending:
         lines += ["", "## Pending (filed, not yet `/repro-confirmed`)", ""]
         for repo, num, author in pending:
@@ -253,6 +287,7 @@ def main() -> int:
     breaks_landed: dict[str, int] = defaultdict(int)
     breaks_received: dict[str, int] = defaultdict(int)
     high_sev_received: dict[str, int] = defaultdict(int)
+    high_sev_landed: dict[str, int] = defaultdict(int)
     fixed: dict[str, int] = defaultdict(int)
     unattributed: list = []
     pending: list = []
@@ -263,17 +298,12 @@ def main() -> int:
         try:
             issues = fetch_issues(t["repo"])
         except subprocess.CalledProcessError as e:
-            print(
-                f"WARN: could not fetch issues for {t['repo']}: {e}",
-                file=sys.stderr,
-            )
+            print(f"WARN: could not fetch issues for {t['repo']}: {e}", file=sys.stderr)
             continue
         for issue in issues:
             labels = {lbl["name"] for lbl in (issue.get("labels") or [])}
             author = (issue.get("author") or {}).get("login") or ""
             if "valid" not in labels:
-                # Filed but not confirmed. Surface it (unless it was ruled invalid)
-                # so a created issue never silently disappears from the board.
                 if "invalid" not in labels:
                     pending.append((t["repo"], issue["number"], author))
                     pending_received[t["id"]] += 1
@@ -283,7 +313,6 @@ def main() -> int:
                 unattributed.append((t["repo"], issue["number"], author))
                 continue
             if breaker == t["id"]:
-                # A break against your own repo doesn't score — but show it.
                 self_authored.append((t["repo"], issue["number"], author))
                 continue
             breaks_landed[breaker] += 1
@@ -291,13 +320,32 @@ def main() -> int:
             severity = parse_form_field(issue.get("body"), "severity")
             if severity == "high":
                 high_sev_received[t["id"]] += 1
+                high_sev_landed[breaker] += 1
             if "fixed" in labels:
                 fixed[t["id"]] += 1
 
+    # Overall accumulated score per team.
+    score: dict[str, int] = {}
+    for t in teams:
+        tid = t["id"]
+        score[tid] = (
+            SCORE_LANDED * breaks_landed.get(tid, 0)
+            + SCORE_HIGH_SEV * high_sev_landed.get(tid, 0)
+            + SCORE_FIXED * fixed.get(tid, 0)
+            + SCORE_RECEIVED * breaks_received.get(tid, 0)
+        )
+
     build_status = {t["id"]: fetch_build_status(t["repo"]) for t in teams}
+
+    now = datetime.now(timezone.utc)
+    iso = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+    utc_fallback = now.strftime("%Y-%m-%d %H:%M UTC")
+
+    append_history(teams, score, iso)
 
     output = render_scoreboard(
         teams=teams,
+        score=score,
         breaks_landed=breaks_landed,
         breaks_received=breaks_received,
         high_sev_received=high_sev_received,
@@ -307,9 +355,11 @@ def main() -> int:
         unattributed=unattributed,
         pending=pending,
         self_authored=self_authored,
+        iso=iso,
+        utc_fallback=utc_fallback,
     )
     (ROOT / "SCOREBOARD.md").write_text(output)
-    print(f"SCOREBOARD.md updated ({len(output)} bytes).")
+    print(f"SCOREBOARD.md updated ({len(output)} bytes); scores.json appended.")
     return 0
 
 

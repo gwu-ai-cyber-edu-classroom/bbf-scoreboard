@@ -17,6 +17,7 @@
     .markdown-body { padding: 1em 2em; }
     .markdown-body table { width: 100%; }
     .markdown-body th, .markdown-body td { padding: 8px 12px; }
+    .chart-wrap { position: relative; height: 360px; }
     footer {
       color: #6e7781;
       font-size: 0.85em;
@@ -25,17 +26,27 @@
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
-  <div id="scoreboard" class="markdown-body">Loading...</div>
+  <div id="scoreboard" class="markdown-body">Loading…</div>
+
+  <section class="markdown-body">
+    <h2>Score over time</h2>
+    <div class="chart-wrap"><canvas id="scoreChart"></canvas></div>
+  </section>
+
   <footer>Auto-refreshes every 30 seconds.</footer>
+
   <script>
+    function teamColor(i) { return 'hsl(' + ((i * 67) % 360) + ' 70% 45%)'; }
+
+    // Scoreboard table (Markdown), with the timestamp shown in local time.
     fetch('SCOREBOARD.md?_=' + Date.now())
       .then(function (r) { return r.text(); })
       .then(function (t) {
         var el = document.getElementById('scoreboard');
         el.innerHTML = marked.parse(t);
-        // Render the timestamp in the viewer's local timezone.
         el.querySelectorAll('[data-utc]').forEach(function (span) {
           var d = new Date(span.getAttribute('data-utc'));
           if (!isNaN(d.getTime())) { span.textContent = d.toLocaleString(); }
@@ -44,6 +55,50 @@
       .catch(function (e) {
         document.getElementById('scoreboard').innerHTML =
           '<p style="color:#cf222e">Could not load SCOREBOARD.md: ' + e + '</p>';
+      });
+
+    // Live score-over-time chart from scores.json.
+    fetch('scores.json?_=' + Date.now())
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var hist = data.history || [];
+        var teams = data.teams || [];
+        if (!hist.length || !teams.length) { throw new Error('no history'); }
+        var labels = hist.map(function (h) {
+          return new Date(h.t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        });
+        var datasets = teams.map(function (tm, i) {
+          return {
+            label: tm.name,
+            data: hist.map(function (h) {
+              var s = h.scores || {};
+              return Object.prototype.hasOwnProperty.call(s, tm.id) ? s[tm.id] : null;
+            }),
+            borderColor: teamColor(i),
+            backgroundColor: teamColor(i),
+            tension: 0.25,
+            spanGaps: true
+          };
+        });
+        new Chart(document.getElementById('scoreChart'), {
+          type: 'line',
+          data: { labels: labels, datasets: datasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+              y: { title: { display: true, text: 'Score' } },
+              x: { title: { display: true, text: 'Time (local)' }, ticks: { maxTicksLimit: 12 } }
+            },
+            plugins: { legend: { position: 'bottom' } }
+          }
+        });
+      })
+      .catch(function () {
+        var c = document.getElementById('scoreChart');
+        if (c) { c.parentNode.innerHTML = '<p style="color:#6e7781">No score history yet — the chart fills in as the updater runs.</p>'; }
       });
   </script>
 </body>
