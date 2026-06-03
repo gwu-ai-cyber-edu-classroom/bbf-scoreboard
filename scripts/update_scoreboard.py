@@ -246,7 +246,8 @@ def append_history(teams: list[dict], score: dict, iso: str, max_points: int) ->
 
 
 def render_scoreboard(*, settings, teams, score, breaks_landed, breaks_received,
-                      high_sev_received, fixed, build_status, iso, utc_fallback) -> str:
+                      high_sev_received, fixed, pending_submitted, pending_review,
+                      build_status, iso, utc_fallback) -> str:
     ranked = sorted(teams, key=lambda t: score.get(t["id"], 0), reverse=True)
     lines = [
         f"# {settings.get('title', 'BBF Scoreboard')}",
@@ -256,15 +257,16 @@ def render_scoreboard(*, settings, teams, score, breaks_landed, breaks_received,
         "Ranked by overall **Score**. Confirmed breaks only — a break counts once a "
         "`/repro-confirmed` comment adds the `valid` label.",
         "",
-        "| Rank | Team | Score | Build | Landed | Received | High-sev | Fixed |",
-        "|---:|---|---:|---|---:|---:|---:|---:|",
+        "| Rank | Team | Score | Build | Landed | Received | High-sev | Fixed | Pending breaks | Pending review |",
+        "|---:|---|---:|---|---:|---:|---:|---:|---:|---:|",
     ]
     for i, t in enumerate(ranked, start=1):
         tid = t["id"]
         lines.append(
             f"| {i} | {t['name']} | **{score.get(tid, 0)}** | {build_status.get(tid, '?')} | "
             f"{breaks_landed.get(tid, 0)} | {breaks_received.get(tid, 0)} | "
-            f"{high_sev_received.get(tid, 0)} | {fixed.get(tid, 0)} |"
+            f"{high_sev_received.get(tid, 0)} | {fixed.get(tid, 0)} | "
+            f"{pending_submitted.get(tid, 0)} | {pending_review.get(tid, 0)} |"
         )
     return "\n".join(lines) + "\n"
 
@@ -307,6 +309,8 @@ def main() -> int:
     breaks_received: dict[str, int] = defaultdict(int)
     high_sev_received: dict[str, int] = defaultdict(int)
     fixed: dict[str, int] = defaultdict(int)
+    pending_submitted: dict[str, int] = defaultdict(int)  # pending breaks a team filed
+    pending_review: dict[str, int] = defaultdict(int)      # breaks awaiting a team's review
     scored: list[dict] = []  # confirmed, attributed, non-self breaks (for decay scoring)
 
     for t in teams:
@@ -341,11 +345,18 @@ def main() -> int:
                 "number": issue.get("number"), "points": 0,
             }
             breaks.append(rec)
-            if status == "pending":
-                continue
             breaker = login_to_team.get(author)
-            if breaker is None or breaker == t["id"]:
+            self_break = breaker == t["id"]
+
+            if status == "pending":
+                pending_review[t["id"]] += 1                 # target must repro-review it
+                if breaker is not None and not self_break:
+                    pending_submitted[breaker] += 1          # filer's outbound pending
+                continue
+            if breaker is None or self_break:
                 continue  # unattributed or self-break: shown in the feed, not scored
+            if status == "fix-review":
+                pending_review[breaker] += 1                 # filer must confirm the fix
             breaks_landed[breaker] += 1
             breaks_received[t["id"]] += 1
             if sev == "high":
@@ -398,7 +409,8 @@ def main() -> int:
     (ROOT / "SCOREBOARD.md").write_text(render_scoreboard(
         settings=settings, teams=teams, score=score, breaks_landed=breaks_landed,
         breaks_received=breaks_received, high_sev_received=high_sev_received,
-        fixed=fixed, build_status=build_status, iso=iso, utc_fallback=utc_fallback,
+        fixed=fixed, pending_submitted=pending_submitted, pending_review=pending_review,
+        build_status=build_status, iso=iso, utc_fallback=utc_fallback,
     ))
     print("SCOREBOARD.md + scores.json + breaks.json + settings.json updated.")
     return 0

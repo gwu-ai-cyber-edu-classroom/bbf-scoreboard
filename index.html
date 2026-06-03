@@ -185,7 +185,9 @@
         "<li><strong>Landed</strong> — confirmed breaks this team filed against others (offense).</li>" +
         "<li><strong>Received</strong> — confirmed breaks others filed against this team (defense).</li>" +
         "<li><strong>High-sev</strong> — of the breaks received, how many were high severity.</li>" +
-        "<li><strong>Fixed</strong> — received breaks closed by a merged PR.</li></ul>" +
+        "<li><strong>Fixed</strong> — received breaks closed by a merged PR and confirmed by the breaker.</li>" +
+        "<li><strong>Pending breaks</strong> — breaks this team has <em>submitted</em> that still await the target's <code>/repro-confirmed</code>.</li>" +
+        "<li><strong>Pending review</strong> — breaks awaiting <em>this team's</em> review: incoming breaks to repro-confirm, plus fixes of their breaks awaiting <code>/fix-confirmed</code>.</li></ul>" +
         "<h3>Acting on a break</h3>" +
         "<p>On the Break Report issue, put the command on the <strong>first line</strong> of a comment:</p><ul>" +
         "<li><code>/repro-confirmed</code> — <em>(targeted team)</em> you reproduced it against your running app → <code>valid</code>; it scores. State <code>repro</code> in the feed.</li>" +
