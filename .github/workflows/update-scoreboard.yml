@@ -2,8 +2,8 @@ name: Update Scoreboard
 
 on:
   schedule:
-    - cron: '*/5 * * * *'      # every 5 minutes
-  workflow_dispatch:             # facilitator-triggered refresh
+    - cron: '*/5 * * * *'      # cadence is managed by apply-settings.yml from settings.yaml
+  workflow_dispatch:
   push:
     paths:
       - teams.yaml
@@ -11,21 +11,41 @@ on:
       - scripts/update_scoreboard.py
 
 permissions:
-  contents: write                # to commit SCOREBOARD.md
-  issues: read                   # read-only on this repo's own issues (cross-repo via PAT)
+  contents: write
+  issues: read
 
 env:
-  # Opt the bundled JS actions into Node 24 now, silencing the Node 20
-  # deprecation warning on each run.
+  # Opt the bundled JS actions into Node 24 (silences the Node 20 deprecation warning).
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
-# Serialize runs so a cron tick and a dispatch/push can't race on `git push`.
 concurrency:
   group: scoreboard-update
   cancel-in-progress: false
 
 jobs:
+  # Honor schedule.enabled in settings.yaml (belt-and-suspenders alongside
+  # apply-settings.yml disabling the workflow via the Actions API).
+  guard:
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.s.outputs.enabled }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - id: s
+        name: Read schedule.enabled from settings.yaml
+        run: |
+          if grep -E '^[[:space:]]*enabled:' settings.yaml | head -1 | grep -qi 'false'; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Auto-update disabled in settings.yaml (schedule.enabled: false)."
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
   update:
+    needs: guard
+    if: needs.guard.outputs.enabled == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -41,19 +61,18 @@ jobs:
 
       - name: Rebuild scoreboard
         env:
-          # SCOREBOARD_PAT must have Contents:read-write and Issues:read on
-          # all repos in the org. See scoreboard/README.md.
+          # SCOREBOARD_PAT: Contents:read-write + Issues:read on all org repos.
           GH_TOKEN: ${{ secrets.SCOREBOARD_PAT }}
         run: python scripts/update_scoreboard.py
 
       - name: Commit if changed
         run: |
-          if [[ -n "$(git status --porcelain SCOREBOARD.md scores.json settings.json)" ]]; then
+          FILES="SCOREBOARD.md scores.json breaks.json settings.json teams.json"
+          if [[ -n "$(git status --porcelain $FILES)" ]]; then
             git config user.name "bbf-scoreboard-bot"
             git config user.email "bbf-scoreboard-bot@users.noreply.github.com"
-            git add SCOREBOARD.md scores.json settings.json
+            git add $FILES
             git commit -m "scoreboard: auto-update $(date -u +%FT%TZ)"
-            # Rebase-and-retry so a concurrent writer can't reject the push.
             for attempt in 1 2 3; do
               git pull --rebase --autostash origin "${GITHUB_REF_NAME:-main}" || true
               if git push; then echo "pushed"; break; fi

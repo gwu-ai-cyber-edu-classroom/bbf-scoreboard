@@ -5,24 +5,26 @@ Live scoreboard for the Build-it / Break-it / Fix-it day activity.
 ## How it works
 
 - `teams.yaml` lists every competing team with its `id`, display `name`, `repo` (full `org/repo` path), and `members` (GitHub logins).
-- `scripts/update_scoreboard.py` reads `teams.yaml`, validates it, queries every team's repo via the `gh` CLI, and regenerates `SCOREBOARD.md`.
-- `index.html` renders `SCOREBOARD.md` with a 30-second auto-refresh. Project this on the wall.
-- `settings.yaml` controls the board: live updates on/off, refresh rate, theme (dark/light), which sections show, and the Score weights. The updater reads it, writes a client subset to `settings.json`, and `index.html` reads `settings.json` on load. Edit and commit `settings.yaml` (a push to it triggers a refresh).
-- `.github/workflows/update-scoreboard.yml` runs the updater on cron (every 5 minutes), on push to `teams.yaml` / `settings.yaml`, and on manual `workflow_dispatch`.
+- `scripts/update_scoreboard.py` reads `teams.yaml` + `settings.yaml`, queries every team's repo via the `gh` CLI, and writes four files: `SCOREBOARD.md` (the Scores table), `scores.json` (graph history), `breaks.json` (the interactive break feed), and `settings.json` (client config, including the data-update cadence read from the cron).
+- `index.html` is a dark CTF board: **Scores** (always shown), then collapsible **Score-over-time graph**, **Break feed** (filter/sort by status / team / severity, with issue links), and **Columns & acting on a break** — all hidden by default, click to expand. It re-fetches on an interval when `live_updates` is on.
+- `settings.yaml` controls everything (theme, which sections exist, Score weights, and the auto-update schedule). See below.
+- `.github/workflows/update-scoreboard.yml` runs the updater on cron, on push to `teams.yaml` / `settings.yaml`, and on `workflow_dispatch`. `.github/workflows/apply-settings.yml` syncs the cron cadence and enables/disables the updater from `settings.yaml`.
 
 ## Settings (`settings.yaml`)
 
 ```yaml
 title: "BBF Scoreboard"
+schedule:
+  enabled: true            # turn the auto-update workflow on/off (no manual edits)
+  update_minutes: 5        # cron cadence; apply-settings.yml writes this into the cron
 display:
-  live_updates: true       # browser auto-refresh on/off
-  refresh_seconds: 30      # browser refresh cadence when live
-  data_update_minutes: 5   # server recompute cadence shown on the site (match the cron)
+  live_updates: true       # browser re-fetches on an interval
+  refresh_seconds: 30      # browser re-fetch cadence when live
   theme: dark              # dark | light
-  show_graph: true         # score-over-time graph
-  show_breaks: true        # Break feed (scannable list + issue links)
-  show_pending: true       # Pending column + list
-  show_diagnostics: true   # Self-authored / Unattributed lists
+  show_graph: true         # include the score-over-time graph section
+  show_breaks: true        # include the Break feed section
+  show_columns: true       # include the "columns / acting on a break" section
+  show_teams: true         # include the Teams roster section (members + repo links)
 scoring:                   # overall Score weights (points)
   landed: 10
   high_sev_landed: 5
@@ -32,20 +34,19 @@ history:
   max_points: 1000         # chart length cap
 ```
 
-## How a break gets counted (Pending → scored)
+Editing `schedule` is special: a push to `settings.yaml` runs **apply-settings.yml**, which rewrites the cron in `update-scoreboard.yml` to `*/update_minutes` and runs `gh workflow enable|disable` per `schedule.enabled` — so you never hand-edit the workflow or touch the Actions UI.
 
-A filed issue does **not** count until it is confirmed. The flow:
+## How a break gets counted (and shown)
 
-1. **File the break** as a Break Report (a GitHub Issue) on the *targeted* team's repo, with all six fields (see the team repo's `AGENTS_BREAK.md`). It now appears under **Pending** on the scoreboard.
-2. **The targeted team reproduces it** against their own running app and comments **`/repro-confirmed`** on the issue (or **`/repro-failed`** if they can't).
-3. The **`issue-events` workflow** then adds the **`valid`** label automatically. (A facilitator can override with **`/out-of-scope`**, which applies `invalid`.)
-4. Within ~5 minutes the cron updater moves it out of **Pending** into **Breaks received** (target) and **Breaks landed** (breaker); high severity also bumps **High-sev received**.
+A filed issue does **not** score until it is confirmed, but it is always visible in the Break feed with a **State**:
 
-For the count to land, three things must hold:
+- **pending** — filed, not yet `/repro-confirmed`.
+- **repro** — the targeted team commented **`/repro-confirmed`**; the `issue-events` workflow added the `valid` label and it now scores.
+- **fixed** — closed by a merged PR whose body said `closes #N` (auto-labeled `fixed`).
 
-- The **`valid` / `invalid` / `fixed` labels must exist** on the repo — `gen-teams-yaml.sh` / `gen-individuals-yaml.sh` create them. Without the label, `/repro-confirmed` silently can't apply it and the issue stays Pending.
-- The **issue author** must be listed in `teams.yaml` (otherwise the issue shows under _Unattributed_).
-- A break against **your own** repo never scores (it shows under _Self-authored_).
+Facilitators can rule a break out with **`/out-of-scope`** (applies `invalid`; it drops from the feed). For a break to score, the `valid`/`invalid`/`fixed` labels must exist on the repo (the `gen-*-yaml.sh` scripts and `issue-events.yml` create them), the author must be in `teams.yaml`, and it can't be a self-break.
+
+**To confirm by hand** (e.g., testing): comment `/repro-confirmed`, or `gh issue edit <N> -R <org>/<repo> --add-label valid`.
 
 **To confirm an issue by hand** (e.g., when testing the board): comment `/repro-confirmed` on it, or apply the label directly —
 
@@ -59,7 +60,7 @@ Then trigger a refresh (Actions → Update Scoreboard → Run workflow) instead 
 
 1. **`SCOREBOARD_PAT` secret.** Create a fine-scoped Personal Access Token at <https://github.com/settings/personal-access-tokens/new> with:
    - Repository access: All repositories in the org
-   - Permissions: `Contents: read & write`, `Issues: read`, `Metadata: read`
+   - Permissions: `Contents: read & write`, `Issues: read`, `Metadata: read`, and — for `apply-settings.yml` to manage the schedule — `Actions: read & write` and `Workflows: read & write` (editing a workflow's cron requires the Workflows scope; enabling/disabling a workflow requires the Actions scope).
 
    Add it as `SCOREBOARD_PAT` under Settings → Secrets and variables → Actions.
 
@@ -80,12 +81,15 @@ README.md                              (this file)
 settings.yaml                          (board config: live updates, theme, weights, toggles)
 teams.yaml                             (roster, regenerated by gen-teams-yaml.sh)
 teams.yaml.example                     (example structure)
-SCOREBOARD.md                          (auto-generated leaderboard; do not edit)
-scores.json                            (auto-generated score history for the chart; do not edit)
+SCOREBOARD.md                          (auto-generated Scores table; do not edit)
+scores.json                            (auto-generated graph history; do not edit)
+breaks.json                            (auto-generated break feed; do not edit)
+teams.json                             (auto-generated team roster for the Teams section; do not edit)
 settings.json                          (auto-generated client subset of settings.yaml; do not edit)
-index.html                             (dark CTF board: live refresh + score-over-time chart)
+index.html                             (dark CTF board: scores + graph + break feed + columns + teams)
 scripts/
   update_scoreboard.py                 (the updater + validator)
 .github/workflows/
-  update-scoreboard.yml                (cron + push + dispatch)
+  update-scoreboard.yml                (cron + push + dispatch; guarded by schedule.enabled)
+  apply-settings.yml                   (syncs cron + enable/disable from settings.yaml)
 ```

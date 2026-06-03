@@ -1,0 +1,63 @@
+name: Apply Settings
+
+# When settings.yaml changes, sync the auto-update schedule into
+# update-scoreboard.yml (the cron cadence) and enable/disable that workflow —
+# so you manage everything from settings.yaml without touching the workflow or
+# the Actions UI.
+#
+# Requires SCOREBOARD_PAT with: Contents:read-write, Actions:read-write, and
+# Workflows:read-write (editing a workflow file's cron needs the Workflows scope;
+# enabling/disabling a workflow needs the Actions scope). See README.
+
+on:
+  push:
+    paths:
+      - settings.yaml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: scoreboard-apply-settings
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          # PAT so the push that edits a workflow file is allowed (Workflows scope).
+          token: ${{ secrets.SCOREBOARD_PAT }}
+
+      - name: Sync cron + enabled from settings.yaml
+        env:
+          GH_TOKEN: ${{ secrets.SCOREBOARD_PAT }}
+        run: |
+          set -euo pipefail
+          MIN=$(grep -E '^[[:space:]]*update_minutes:' settings.yaml | head -1 | grep -oE '[0-9]+' | head -1 || true)
+          if ! [[ "${MIN:-}" =~ ^[0-9]+$ ]] || [ "$MIN" -lt 1 ]; then MIN=5; fi
+          if grep -E '^[[:space:]]*enabled:' settings.yaml | head -1 | grep -qi 'false'; then ENABLED=false; else ENABLED=true; fi
+          echo "update_minutes=$MIN  enabled=$ENABLED"
+
+          WF=.github/workflows/update-scoreboard.yml
+          sed -i -E "s#(cron: ')\*/[0-9]+( \* \* \* \*')#\1*/${MIN}\2#" "$WF"
+          if [[ -n "$(git status --porcelain "$WF")" ]]; then
+            git config user.name "bbf-scoreboard-bot"
+            git config user.email "bbf-scoreboard-bot@users.noreply.github.com"
+            git add "$WF"
+            git commit -m "scoreboard: set update cron to */${MIN} (from settings.yaml)"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME:-main}" || true
+            git push
+          else
+            echo "cron already */${MIN}"
+          fi
+
+          if [ "$ENABLED" = "true" ]; then
+            gh workflow enable  update-scoreboard.yml -R "$GITHUB_REPOSITORY" && echo "updater ENABLED"  || true
+          else
+            gh workflow disable update-scoreboard.yml -R "$GITHUB_REPOSITORY" && echo "updater DISABLED" || true
+          fi

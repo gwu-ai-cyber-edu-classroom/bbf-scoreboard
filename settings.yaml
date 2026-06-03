@@ -1,23 +1,27 @@
 # BBF scoreboard settings — edit and commit.
 #
-# On the next run the updater regenerates SCOREBOARD.md, scores.json, and
-# settings.json; index.html reads settings.json on load. A push to this file
-# also triggers a refresh.
+# A push to this file triggers:
+#   - apply-settings.yml: sets the updater cron from schedule.update_minutes and
+#     enables/disables the updater workflow from schedule.enabled.
+#   - update-scoreboard.yml: regenerates SCOREBOARD.md / scores.json / breaks.json
+#     / settings.json. index.html reads settings.json + breaks.json on load.
 
 # Page heading / browser title.
 title: "BBF Scoreboard"
 
+# Auto-update schedule (server side).
+schedule:
+  enabled: true            # turn the auto-update workflow on/off (no edits needed)
+  update_minutes: 5        # how often the scoreboard recomputes (cron cadence)
+
 display:
-  live_updates: true       # auto-refresh the board in the browser
-  refresh_seconds: 30      # browser refresh cadence (when live_updates is on)
-  data_update_minutes: 5   # how often the data recomputes server-side; shown on
-                           # the site — keep in sync with the cron in
-                           # .github/workflows/update-scoreboard.yml
+  live_updates: true       # browser re-fetches the board on an interval
+  refresh_seconds: 30      # browser re-fetch cadence (when live_updates is on)
   theme: dark              # dark | light
-  show_graph: true         # show the score-over-time graph
-  show_breaks: true        # show the Break feed (scannable list of breaks + issue links)
-  show_pending: true       # show the Pending column + the Pending list
-  show_diagnostics: true   # show the Self-authored / Unattributed lists
+  show_graph: true         # include the score-over-time graph section
+  show_breaks: true        # include the Break feed section
+  show_columns: true       # include the "columns / acting on a break" section
+  show_teams: true         # include the Teams roster section (members + repo links)
 
 # Overall Score weights (points). Tune freely.
 scoring:

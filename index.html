@@ -8,85 +8,78 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg: #0a0e14; --panel: #0f1620; --panel-2: #131c28; --border: #1f2b3a;
-      --text: #cdd9e5; --muted: #7a8aa0; --head: #e6edf3;
-      --accent: #3fb950; --accent-2: #2f81f7; --danger: #f85149; --gold: #e3b341;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      --bg:#0a0e14; --panel:#0f1620; --panel-2:#131c28; --border:#1f2b3a;
+      --text:#cdd9e5; --muted:#7a8aa0; --head:#e6edf3;
+      --accent:#3fb950; --accent-2:#2f81f7; --danger:#f85149; --gold:#e3b341; --warn:#d29922;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       --sans: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     }
     html[data-theme="light"] {
-      --bg: #f6f8fa; --panel: #ffffff; --panel-2: #f0f3f6; --border: #d0d7de;
-      --text: #1f2328; --muted: #636c76; --head: #0d1117;
-      --accent: #1a7f37; --accent-2: #0969da; --danger: #cf222e; --gold: #9a6700;
+      --bg:#f6f8fa; --panel:#fff; --panel-2:#f0f3f6; --border:#d0d7de;
+      --text:#1f2328; --muted:#636c76; --head:#0d1117;
+      --accent:#1a7f37; --accent-2:#0969da; --danger:#cf222e; --gold:#9a6700; --warn:#9a6700;
     }
     * { box-sizing: border-box; }
-    body {
-      background: var(--bg); color: var(--text); font-family: var(--sans);
-      max-width: 1000px; margin: 0 auto; padding: 1.5em 1.25em 3em;
-      line-height: 1.5; -webkit-font-smoothing: antialiased;
-    }
-    .topbar {
-      display: flex; align-items: center; gap: .75em; flex-wrap: wrap;
-      border-bottom: 1px solid var(--border); padding-bottom: .8em; margin-bottom: 1.2em;
-    }
-    .brand {
-      font-family: var(--mono); font-weight: 700; font-size: 1.35rem; color: var(--head);
-      letter-spacing: .02em;
-    }
-    .brand .tick { color: var(--accent); }
-    .live {
-      display: inline-flex; align-items: center; gap: .45em; font-family: var(--mono);
-      font-size: .72rem; color: var(--accent); border: 1px solid var(--accent);
-      border-radius: 999px; padding: .15em .6em; text-transform: uppercase; letter-spacing: .08em;
-    }
-    .live .dot {
-      width: .55em; height: .55em; border-radius: 50%; background: var(--accent);
-      box-shadow: 0 0 0 0 var(--accent); animation: pulse 1.8s infinite;
-    }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(63,185,80,.6); }
-      70% { box-shadow: 0 0 0 .5em rgba(63,185,80,0); }
-      100% { box-shadow: 0 0 0 0 rgba(63,185,80,0); }
-    }
-    .spacer { flex: 1; }
-    .updated { font-family: var(--mono); font-size: .75rem; color: var(--muted); }
+    body { background:var(--bg); color:var(--text); font-family:var(--sans);
+      max-width:1000px; margin:0 auto; padding:1.5em 1.25em 3em; line-height:1.5; }
+    .topbar { display:flex; align-items:center; gap:.75em; flex-wrap:wrap;
+      border-bottom:1px solid var(--border); padding-bottom:.8em; margin-bottom:1.2em; }
+    .brand { font-family:var(--mono); font-weight:700; font-size:1.35rem; color:var(--head); }
+    .brand .tick { color:var(--accent); }
+    .live { display:inline-flex; align-items:center; gap:.45em; font-family:var(--mono);
+      font-size:.72rem; color:var(--accent); border:1px solid var(--accent); border-radius:999px;
+      padding:.15em .6em; text-transform:uppercase; letter-spacing:.08em; }
+    .live .dot { width:.55em; height:.55em; border-radius:50%; background:var(--accent);
+      animation:pulse 1.8s infinite; }
+    @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(63,185,80,.6);} 70%{box-shadow:0 0 0 .5em rgba(63,185,80,0);} 100%{box-shadow:0 0 0 0 rgba(63,185,80,0);} }
+    .spacer { flex:1; }
+    .updated { font-family:var(--mono); font-size:.75rem; color:var(--muted); }
 
-    .card {
-      background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
-      padding: 1em 1.25em; margin: 1em 0;
+    .card { background:var(--panel); border:1px solid var(--border); border-radius:12px;
+      padding:1em 1.25em; margin:1em 0; }
+    details.card > summary {
+      list-style:none; cursor:pointer; font-family:var(--mono); font-size:.85rem;
+      text-transform:uppercase; letter-spacing:.12em; color:var(--accent); user-select:none;
     }
-    h1 { display: none; }            /* board title comes from the topbar brand */
-    h2 {
-      font-family: var(--mono); font-size: .85rem; text-transform: uppercase;
-      letter-spacing: .12em; color: var(--accent); margin: 1.4em 0 .6em;
-    }
-    p { color: var(--text); }
-    em { color: var(--muted); font-style: normal; }
-    a { color: var(--accent-2); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    code {
-      font-family: var(--mono); font-size: .85em; background: var(--panel-2);
-      border: 1px solid var(--border); border-radius: 5px; padding: .08em .4em; color: var(--head);
-    }
-    ul { padding-left: 1.2em; }
-    li { margin: .25em 0; }
+    details.card > summary::-webkit-details-marker { display:none; }
+    details.card > summary::before { content:"▸ "; color:var(--muted); }
+    details.card[open] > summary::before { content:"▾ "; }
+    details.card > summary .hint { float:right; color:var(--muted); text-transform:none; letter-spacing:0; font-size:.72rem; }
+    details.card > *:not(summary) { margin-top:1em; }
 
-    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
-    th, td { padding: .55em .7em; text-align: left; border-bottom: 1px solid var(--border); }
-    th {
-      font-family: var(--mono); font-size: .72rem; text-transform: uppercase;
-      letter-spacing: .06em; color: var(--muted); border-bottom: 2px solid var(--border);
-    }
-    td { font-family: var(--mono); color: var(--head); }
-    td:nth-child(2) { font-family: var(--sans); }       /* Team name */
-    tbody tr:hover { background: var(--panel-2); }
-    tbody tr:first-child td { color: var(--gold); }      /* leader */
-    td strong { color: var(--accent); }                  /* Score */
-    th:nth-child(n+3), td:nth-child(n+3) { text-align: right; }
-    th:nth-child(2), td:nth-child(2) { text-align: left; }
+    h1 { display:none; }
+    h3 { font-family:var(--mono); color:var(--head); font-size:.95rem; margin:.8em 0 .4em; }
+    p { color:var(--text); } em { color:var(--muted); font-style:normal; }
+    a { color:var(--accent-2); text-decoration:none; } a:hover { text-decoration:underline; }
+    code { font-family:var(--mono); font-size:.85em; background:var(--panel-2);
+      border:1px solid var(--border); border-radius:5px; padding:.08em .4em; color:var(--head); }
+    ul { padding-left:1.2em; } li { margin:.25em 0; }
 
-    .chart-wrap { position: relative; height: 340px; }
-    footer { color: var(--muted); font-family: var(--mono); font-size: .72rem; text-align: center; margin-top: 2em; }
+    table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
+    th, td { padding:.5em .7em; text-align:left; border-bottom:1px solid var(--border); vertical-align:top; }
+    th { font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em;
+      color:var(--muted); border-bottom:2px solid var(--border); }
+    td { font-family:var(--mono); color:var(--head); }
+    #board td:nth-child(2) { font-family:var(--sans); }
+    #board tbody tr:hover, #feed-table tbody tr:hover { background:var(--panel-2); }
+    #board tbody tr:first-child td { color:var(--gold); }
+    #board td strong { color:var(--accent); }
+    #board th:nth-child(n+3), #board td:nth-child(n+3) { text-align:right; }
+    #board th:nth-child(2), #board td:nth-child(2) { text-align:left; }
+
+    .controls { display:flex; gap:.8em; flex-wrap:wrap; align-items:center;
+      font-family:var(--mono); font-size:.78rem; color:var(--muted); }
+    .controls label { display:inline-flex; gap:.35em; align-items:center; }
+    .controls select { background:var(--panel-2); color:var(--text); border:1px solid var(--border);
+      border-radius:6px; padding:.25em .5em; font-family:var(--mono); font-size:.8rem; }
+    .badge { display:inline-block; font-family:var(--mono); font-size:.7rem; text-transform:uppercase;
+      letter-spacing:.05em; border-radius:5px; padding:.1em .5em; border:1px solid; }
+    .st-pending { color:var(--warn); border-color:var(--warn); }
+    .st-repro { color:var(--accent); border-color:var(--accent); }
+    .st-fixed { color:var(--accent-2); border-color:var(--accent-2); }
+    .sev-high { color:var(--danger); font-weight:700; }
+    .chart-wrap { position:relative; height:340px; }
+    footer { color:var(--muted); font-family:var(--mono); font-size:.72rem; text-align:center; margin-top:2em; }
   </style>
 </head>
 <body>
@@ -97,42 +90,91 @@
     <span class="updated" id="updated"></span>
   </div>
 
+  <!-- 1. Scores (always visible) -->
   <div id="board" class="card">Loading…</div>
 
-  <section id="chart-card" class="card">
-    <h2>Score over time</h2>
+  <!-- 2. Graph (collapsed by default) -->
+  <details id="sec-graph" class="card">
+    <summary>Score over time <span class="hint">click to show</span></summary>
     <div class="chart-wrap"><canvas id="scoreChart"></canvas></div>
-  </section>
+  </details>
+
+  <!-- 3. Break feed (collapsed by default) -->
+  <details id="sec-feed" class="card">
+    <summary>Break feed <span class="hint">click to show</span></summary>
+    <div class="controls">
+      <label>Status
+        <select id="f-status"><option value="all">all</option><option value="pending">pending</option><option value="repro">repro</option><option value="fixed">fixed</option></select>
+      </label>
+      <label>Team <select id="f-team"><option value="all">all</option></select></label>
+      <label>Severity
+        <select id="f-sev"><option value="all">all</option><option value="high">high</option><option value="medium">medium</option><option value="low">low</option></select>
+      </label>
+      <label>Sort
+        <select id="f-sort"><option value="newest">newest</option><option value="status">status</option><option value="severity">severity</option><option value="team">team</option></select>
+      </label>
+    </div>
+    <div id="feed-table"></div>
+  </details>
+
+  <!-- 4. What columns mean / acting on a break (collapsed by default) -->
+  <details id="sec-columns" class="card">
+    <summary>Columns &amp; acting on a break <span class="hint">click to show</span></summary>
+    <div id="columns-body"></div>
+  </details>
+
+  <!-- 5. Teams roster (collapsed by default) -->
+  <details id="sec-teams" class="card">
+    <summary>Teams <span class="hint">click to show</span></summary>
+    <div id="teams-body"></div>
+  </details>
 
   <footer id="foot"></footer>
 
   <script>
-    var DEFAULTS = { title: "BBF Scoreboard", liveUpdates: true, refreshSeconds: 30, dataUpdateMinutes: 5, theme: "dark", showGraph: true };
-    var settings = DEFAULTS, chart = null, timer = null;
+    var DEFAULTS = { title:"BBF Scoreboard", liveUpdates:true, refreshSeconds:30, dataUpdateMinutes:5,
+      theme:"dark", showGraph:true, showBreaks:true, showColumns:true,
+      scoring:{landed:10,highSevLanded:5,fixed:5,received:-5} };
+    var settings = DEFAULTS, chart = null, timer = null, allBreaks = [];
     var $ = function (id) { return document.getElementById(id); };
     function teamColor(i) { return "hsl(" + ((i * 67) % 360) + " 70% 55%)"; }
     function bust(u) { return u + "?_=" + Date.now(); }
-    function showGraph() {
-      if (settings.showGraph !== undefined) return !!settings.showGraph;
-      if (settings.showChart !== undefined) return !!settings.showChart;  // legacy
-      return true;
-    }
+    function esc(s) { return String(s == null ? "" : s).replace(/[&<>]/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; }); }
 
     function applyChrome() {
       document.documentElement.setAttribute("data-theme", settings.theme === "light" ? "light" : "dark");
       document.title = settings.title;
       $("brand-title").textContent = settings.title;
       $("live").style.display = settings.liveUpdates ? "" : "none";
-      $("chart-card").style.display = showGraph() ? "" : "none";
-      var dataMin = settings.dataUpdateMinutes || 5;
-      var dataNote = "Scores recompute every ~" + dataMin + " min (and immediately on each break/fix).";
-      $("foot").textContent = (settings.liveUpdates
-        ? "This page auto-refreshes every " + settings.refreshSeconds + "s. "
-        : "Live updates off — reload to refresh. ") + dataNote;
-      // Chart.js theming
+      $("sec-graph").style.display = settings.showGraph ? "" : "none";
+      $("sec-feed").style.display = settings.showBreaks ? "" : "none";
+      $("sec-columns").style.display = settings.showColumns ? "" : "none";
+      $("sec-teams").style.display = (settings.showTeams === false) ? "none" : "";
+      var dm = settings.dataUpdateMinutes || 5;
+      $("foot").textContent = "Scoreboard updates about every " + dm + " min (and immediately on each break/fix).";
       var css = getComputedStyle(document.documentElement);
       Chart.defaults.color = css.getPropertyValue("--muted").trim();
       Chart.defaults.borderColor = css.getPropertyValue("--border").trim();
+    }
+
+    function renderColumns() {
+      var w = settings.scoring || DEFAULTS.scoring;
+      $("columns-body").innerHTML =
+        "<h3>What the columns mean</h3><ul>" +
+        "<li><strong>Score</strong> — overall points: +" + w.landed + " per break landed, +" + w.highSevLanded +
+          " extra per high-severity break landed, +" + w.fixed + " per fix, " + w.received + " per break received.</li>" +
+        "<li><strong>Build</strong> — latest <code>build-check.yml</code> run (success / failure / no-runs).</li>" +
+        "<li><strong>Landed</strong> — confirmed breaks this team filed against others (offense).</li>" +
+        "<li><strong>Received</strong> — confirmed breaks others filed against this team (defense).</li>" +
+        "<li><strong>High-sev</strong> — of the breaks received, how many were high severity.</li>" +
+        "<li><strong>Fixed</strong> — received breaks closed by a merged PR.</li></ul>" +
+        "<h3>Acting on a break</h3>" +
+        "<p>On the Break Report issue, put the command on the <strong>first line</strong> of a comment:</p><ul>" +
+        "<li><code>/repro-confirmed</code> — <em>(targeted team)</em> you reproduced it against your running app → <code>valid</code>; it scores. State <code>repro</code> in the feed.</li>" +
+        "<li><code>/repro-failed</code> — <em>(targeted team)</em> you could not reproduce it → <code>invalid</code>; say what you tried.</li>" +
+        "<li><code>/out-of-scope</code> — <em>(facilitators only)</em> rule a break invalid (unsafe / off-protocol).</li></ul>" +
+        "<p><strong>Fixing a break:</strong> open a Pull Request whose body includes <code>closes #N</code> (N = the issue number). " +
+        "When it merges, GitHub closes the issue and it is auto-labeled <code>fixed</code> (State <code>fixed</code> in the feed, +" + w.fixed + " to your Score).</p>";
     }
 
     function renderBoard() {
@@ -141,69 +183,108 @@
         el.innerHTML = marked.parse(t);
         el.querySelectorAll("[data-utc]").forEach(function (span) {
           var d = new Date(span.getAttribute("data-utc"));
-          if (!isNaN(d.getTime())) {
-            span.textContent = d.toLocaleString();
-            $("updated").textContent = "updated " + d.toLocaleTimeString();
-          }
+          if (!isNaN(d.getTime())) { span.textContent = d.toLocaleString(); $("updated").textContent = "updated " + d.toLocaleTimeString(); }
         });
-      }).catch(function (e) {
-        $("board").innerHTML = '<p style="color:var(--danger)">Could not load SCOREBOARD.md: ' + e + "</p>";
-      });
+      }).catch(function (e) { $("board").innerHTML = '<p style="color:var(--danger)">Could not load SCOREBOARD.md: ' + e + "</p>"; });
     }
 
-    function renderChart() {
-      if (!showGraph()) return Promise.resolve();
+    function renderGraph() {
+      if (!settings.showGraph) return Promise.resolve();
       return fetch(bust("scores.json")).then(function (r) { return r.json(); }).then(function (data) {
         var hist = data.history || [], teams = data.teams || [];
         if (!hist.length || !teams.length) throw new Error("no history");
-        var labels = hist.map(function (h) {
-          return new Date(h.t).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-        });
+        var labels = hist.map(function (h) { return new Date(h.t).toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" }); });
         var datasets = teams.map(function (tm, i) {
-          return {
-            label: tm.name,
-            data: hist.map(function (h) {
-              var s = h.scores || {};
-              return Object.prototype.hasOwnProperty.call(s, tm.id) ? s[tm.id] : null;
-            }),
-            borderColor: teamColor(i), backgroundColor: teamColor(i),
-            tension: 0.25, spanGaps: true, pointRadius: 2
-          };
+          return { label: tm.name, data: hist.map(function (h) { var s = h.scores || {}; return (tm.id in s) ? s[tm.id] : null; }),
+            borderColor: teamColor(i), backgroundColor: teamColor(i), tension:0.25, spanGaps:true, pointRadius:2 };
         });
         if (chart) chart.destroy();
-        chart = new Chart($("scoreChart"), {
-          type: "line",
-          data: { labels: labels, datasets: datasets },
-          options: {
-            responsive: true, maintainAspectRatio: false, animation: false,
-            interaction: { mode: "index", intersect: false },
-            scales: {
-              y: { title: { display: true, text: "Score" } },
-              x: { title: { display: true, text: "Time (local)" }, ticks: { maxTicksLimit: 12 } }
-            },
-            plugins: { legend: { position: "bottom" } }
-          }
-        });
-      }).catch(function () {
-        var c = $("scoreChart");
-        if (c) c.parentNode.innerHTML = '<p style="color:var(--muted)">No score history yet — the chart fills in as the updater runs.</p>';
-      });
+        chart = new Chart($("scoreChart"), { type:"line", data:{ labels:labels, datasets:datasets },
+          options:{ responsive:true, maintainAspectRatio:false, animation:false, interaction:{mode:"index",intersect:false},
+            scales:{ y:{title:{display:true,text:"Score"}}, x:{ticks:{maxTicksLimit:12}} }, plugins:{ legend:{position:"bottom"} } } });
+      }).catch(function () { var c = $("scoreChart"); if (c) c.parentNode.innerHTML = '<p style="color:var(--muted)">No score history yet.</p>'; });
     }
 
-    function tick() { return Promise.all([renderBoard(), renderChart()]); }
+    function populateTeamFilter() {
+      var sel = $("f-team"), cur = sel.value;
+      var names = {};
+      allBreaks.forEach(function (b) { if (b.from) names[b.from] = 1; if (b.to) names[b.to] = 1; });
+      var opts = ['<option value="all">all</option>'].concat(Object.keys(names).sort().map(function (n) {
+        return '<option value="' + esc(n) + '">' + esc(n) + "</option>"; }));
+      sel.innerHTML = opts.join("");
+      sel.value = (cur && names[cur]) ? cur : "all";
+    }
+
+    function renderFeedTable() {
+      var st = $("f-status").value, tm = $("f-team").value, sv = $("f-sev").value, sort = $("f-sort").value;
+      var rows = allBreaks.filter(function (b) {
+        return (st === "all" || b.status === st) && (sv === "all" || b.sev === sv) && (tm === "all" || b.from === tm || b.to === tm);
+      });
+      var sevRank = { high:0, medium:1, low:2, "":3 }, stRank = { fixed:0, repro:1, pending:2 };
+      if (sort === "newest") rows.sort(function (a, b) { return (b.number||0) - (a.number||0); });
+      else if (sort === "status") rows.sort(function (a, b) { return (stRank[a.status]??9) - (stRank[b.status]??9) || (b.number||0)-(a.number||0); });
+      else if (sort === "severity") rows.sort(function (a, b) { return (sevRank[a.sev]??9) - (sevRank[b.sev]??9) || (b.number||0)-(a.number||0); });
+      else if (sort === "team") rows.sort(function (a, b) { return String(a.to).localeCompare(String(b.to)) || (b.number||0)-(a.number||0); });
+
+      if (!rows.length) { $("feed-table").innerHTML = '<p style="color:var(--muted)">No breaks match.</p>'; return; }
+      var html = "<table><thead><tr><th>State</th><th>Issue</th><th>From → To</th><th>Property</th><th>Class</th><th>Sev</th></tr></thead><tbody>";
+      rows.forEach(function (b) {
+        var title = (b.title || "").replace(/^\[BREAK\]\s*/, "").trim();
+        if (title.length > 64) title = title.slice(0, 61) + "…";
+        var label = "#" + b.number + (title ? " " + title : "");
+        var issue = b.url ? '<a href="' + esc(b.url) + '" target="_blank" rel="noopener">' + esc(label) + "</a>" : esc(label);
+        var sevCls = b.sev === "high" ? ' class="sev-high"' : "";
+        html += "<tr><td><span class='badge st-" + esc(b.status) + "'>" + esc(b.status) + "</span></td>" +
+          "<td>" + issue + "</td><td>" + esc(b.from) + " → " + esc(b.to) + "</td>" +
+          "<td>" + esc(b.prop) + "</td><td>" + esc(b.cls) + "</td><td" + sevCls + ">" + esc(b.sev) + "</td></tr>";
+      });
+      $("feed-table").innerHTML = html + "</tbody></table>";
+    }
+
+    function renderFeed() {
+      if (!settings.showBreaks) return Promise.resolve();
+      return fetch(bust("breaks.json")).then(function (r) { return r.json(); }).then(function (data) {
+        allBreaks = data.breaks || [];
+        populateTeamFilter();
+        renderFeedTable();
+      }).catch(function () { $("feed-table").innerHTML = '<p style="color:var(--muted)">No break feed yet.</p>'; });
+    }
+
+    function renderTeams() {
+      if (settings.showTeams === false) return Promise.resolve();
+      return fetch(bust("teams.json")).then(function (r) { return r.json(); }).then(function (data) {
+        var teams = data.teams || [];
+        if (!teams.length) { $("teams-body").innerHTML = '<p style="color:var(--muted)">No teams yet.</p>'; return; }
+        var html = "<table><thead><tr><th>Team</th><th>Repo</th><th>Members</th></tr></thead><tbody>";
+        teams.forEach(function (t) {
+          var repo = t.repo
+            ? '<a href="https://github.com/' + esc(t.repo) + '" target="_blank" rel="noopener">' + esc(t.repo) + "</a>"
+            : "—";
+          var members = (t.members || []).map(function (m) {
+            return '<a href="https://github.com/' + esc(m) + '" target="_blank" rel="noopener">@' + esc(m) + "</a>";
+          }).join(", ") || "—";
+          html += "<tr><td>" + esc(t.name) + "</td><td>" + repo + "</td><td>" + members + "</td></tr>";
+        });
+        $("teams-body").innerHTML = html + "</tbody></table>";
+      }).catch(function () { $("teams-body").innerHTML = '<p style="color:var(--muted)">No team roster yet.</p>'; });
+    }
+
+    function tick() { return Promise.all([renderBoard(), renderGraph(), renderFeed(), renderTeams()]); }
+
+    ["f-status", "f-team", "f-sev", "f-sort"].forEach(function (id) {
+      document.addEventListener("change", function (e) { if (e.target && e.target.id === id) renderFeedTable(); });
+    });
 
     function start() {
-      fetch(bust("settings.json"))
-        .then(function (r) { return r.json(); })
+      fetch(bust("settings.json")).then(function (r) { return r.json(); })
         .then(function (s) { settings = Object.assign({}, DEFAULTS, s); })
         .catch(function () { settings = DEFAULTS; })
         .finally(function () {
           applyChrome();
+          renderColumns();
           tick();
           if (timer) clearInterval(timer);
-          if (settings.liveUpdates) {
-            timer = setInterval(tick, Math.max(5, settings.refreshSeconds) * 1000);
-          }
+          if (settings.liveUpdates) timer = setInterval(tick, Math.max(5, settings.refreshSeconds) * 1000);
         });
     }
     start();
