@@ -133,8 +133,7 @@
 
   <script>
     var DEFAULTS = { title:"BBF Scoreboard", liveUpdates:true, refreshSeconds:30, dataUpdateMinutes:5,
-      theme:"dark", showGraph:true, showBreaks:true, showColumns:true,
-      scoring:{landed:10,highSevLanded:5,fixed:5,received:-5} };
+      theme:"dark", scoring:{landed:10,highSevLanded:5,fixed:5,received:-5} };
     var settings = DEFAULTS, chart = null, timer = null, allBreaks = [];
     var $ = function (id) { return document.getElementById(id); };
     function teamColor(i) { return "hsl(" + ((i * 67) % 360) + " 70% 55%)"; }
@@ -146,10 +145,8 @@
       document.title = settings.title;
       $("brand-title").textContent = settings.title;
       $("live").style.display = settings.liveUpdates ? "" : "none";
-      $("sec-graph").style.display = settings.showGraph ? "" : "none";
-      $("sec-feed").style.display = settings.showBreaks ? "" : "none";
-      $("sec-columns").style.display = settings.showColumns ? "" : "none";
-      $("sec-teams").style.display = (settings.showTeams === false) ? "none" : "";
+      // Graph / Feed / Columns / Teams are always present as collapsible panels
+      // (collapsed by default — click the ▸ to expand). They are not hidden via settings.
       var dm = settings.dataUpdateMinutes || 5;
       $("foot").textContent = "Scoreboard updates about every " + dm + " min (and immediately on each break/fix).";
       var css = getComputedStyle(document.documentElement);
@@ -189,7 +186,6 @@
     }
 
     function renderGraph() {
-      if (!settings.showGraph) return Promise.resolve();
       return fetch(bust("scores.json")).then(function (r) { return r.json(); }).then(function (data) {
         var hist = data.history || [], teams = data.teams || [];
         if (!hist.length || !teams.length) throw new Error("no history");
@@ -242,7 +238,6 @@
     }
 
     function renderFeed() {
-      if (!settings.showBreaks) return Promise.resolve();
       return fetch(bust("breaks.json")).then(function (r) { return r.json(); }).then(function (data) {
         allBreaks = data.breaks || [];
         populateTeamFilter();
@@ -251,7 +246,6 @@
     }
 
     function renderTeams() {
-      if (settings.showTeams === false) return Promise.resolve();
       return fetch(bust("teams.json")).then(function (r) { return r.json(); }).then(function (data) {
         var teams = data.teams || [];
         if (!teams.length) { $("teams-body").innerHTML = '<p style="color:var(--muted)">No teams yet.</p>'; return; }

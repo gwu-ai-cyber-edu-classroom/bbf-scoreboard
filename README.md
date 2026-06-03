@@ -21,10 +21,8 @@ display:
   live_updates: true       # browser re-fetches on an interval
   refresh_seconds: 30      # browser re-fetch cadence when live
   theme: dark              # dark | light
-  show_graph: true         # include the score-over-time graph section
-  show_breaks: true        # include the Break feed section
-  show_columns: true       # include the "columns / acting on a break" section
-  show_teams: true         # include the Teams roster section (members + repo links)
+  # Graph / Break feed / Columns / Teams are always shown as collapsible panels
+  # (collapsed by default; click ▸ to expand) — not toggled in settings.
 scoring:                   # overall Score weights (points)
   landed: 10
   high_sev_landed: 5
