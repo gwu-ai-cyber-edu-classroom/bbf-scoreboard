@@ -4,10 +4,6 @@
   "refreshSeconds": 30,
   "dataUpdateMinutes": 5,
   "theme": "dark",
-  "showGraph": true,
-  "showBreaks": true,
-  "showColumns": true,
-  "showTeams": true,
   "scoring": {
     "landed": 10,
     "highSevLanded": 5,
