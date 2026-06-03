@@ -24,10 +24,12 @@ display:
 
 # Overall Score weights (points). Tune freely.
 scoring:
-  landed: 10               # per confirmed break you filed against another team
+  landed: 10               # per confirmed break you filed against another team (first finder)
   high_sev_landed: 5       # extra, per high-severity break landed
   fixed: 5                 # per break against you closed by a merged PR
   received: -5             # per confirmed break others landed on you
+  duplicate_halflife_minutes: 5   # later duplicates of the same break decay:
+                                   # points = base * 0.5 ** (minutes_after_first / halflife)
 
 history:
   max_points: 1000         # cap on scores.json datapoints (chart length)

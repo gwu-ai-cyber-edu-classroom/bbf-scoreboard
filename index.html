@@ -77,6 +77,8 @@
     .st-pending { color:var(--warn); border-color:var(--warn); }
     .st-repro { color:var(--accent); border-color:var(--accent); }
     .st-fixed { color:var(--accent-2); border-color:var(--accent-2); }
+    .disc-black-box { color:var(--accent-2); border-color:var(--accent-2); }
+    .disc-white-box { color:var(--gold); border-color:var(--gold); }
     .sev-high { color:var(--danger); font-weight:700; }
     .chart-wrap { position:relative; height:340px; }
     footer { color:var(--muted); font-family:var(--mono); font-size:.72rem; text-align:center; margin-top:2em; }
@@ -109,6 +111,9 @@
       <label>Team <select id="f-team"><option value="all">all</option></select></label>
       <label>Severity
         <select id="f-sev"><option value="all">all</option><option value="high">high</option><option value="medium">medium</option><option value="low">low</option></select>
+      </label>
+      <label>Found
+        <select id="f-disc"><option value="all">all</option><option value="black-box">black-box</option><option value="white-box">white-box</option></select>
       </label>
       <label>Sort
         <select id="f-sort"><option value="newest">newest</option><option value="status">status</option><option value="severity">severity</option><option value="team">team</option></select>
@@ -159,7 +164,9 @@
       $("columns-body").innerHTML =
         "<h3>What the columns mean</h3><ul>" +
         "<li><strong>Score</strong> — overall points: +" + w.landed + " per break landed, +" + w.highSevLanded +
-          " extra per high-severity break landed, +" + w.fixed + " per fix, " + w.received + " per break received.</li>" +
+          " extra per high-severity break landed, +" + w.fixed + " per fix, " + w.received + " per break received. " +
+          "<strong>First finder wins:</strong> the first team to file a given break (same target + property + class) earns full points; " +
+          "later duplicates decay by half every " + (w.duplicateHalflifeMinutes || 5) + " min, toward zero. The feed's <strong>Pts</strong> column shows what each break earned.</li>" +
         "<li><strong>Build</strong> — latest <code>build-check.yml</code> run (success / failure / no-runs).</li>" +
         "<li><strong>Landed</strong> — confirmed breaks this team filed against others (offense).</li>" +
         "<li><strong>Received</strong> — confirmed breaks others filed against this team (defense).</li>" +
@@ -171,7 +178,10 @@
         "<li><code>/repro-failed</code> — <em>(targeted team)</em> you could not reproduce it → <code>invalid</code>; say what you tried.</li>" +
         "<li><code>/out-of-scope</code> — <em>(facilitators only)</em> rule a break invalid (unsafe / off-protocol).</li></ul>" +
         "<p><strong>Fixing a break:</strong> open a Pull Request whose body includes <code>closes #N</code> (N = the issue number). " +
-        "When it merges, GitHub closes the issue and it is auto-labeled <code>fixed</code> (State <code>fixed</code> in the feed, +" + w.fixed + " to your Score).</p>";
+        "When it merges, GitHub closes the issue and it is auto-labeled <code>fixed</code> (State <code>fixed</code> in the feed, +" + w.fixed + " to your Score).</p>" +
+        "<p><strong>Found (black-box vs white-box):</strong> the Break feed shows how each break was discovered — " +
+        "<code>black-box</code> (interface only) or <code>white-box</code> (source-assisted). Per <code>AGENTS_BREAK.md</code>, " +
+        "teams work black-box first and only review source after exhausting it.</p>";
     }
 
     function renderBoard() {
@@ -212,9 +222,10 @@
     }
 
     function renderFeedTable() {
-      var st = $("f-status").value, tm = $("f-team").value, sv = $("f-sev").value, sort = $("f-sort").value;
+      var st = $("f-status").value, tm = $("f-team").value, sv = $("f-sev").value, dc = $("f-disc").value, sort = $("f-sort").value;
       var rows = allBreaks.filter(function (b) {
-        return (st === "all" || b.status === st) && (sv === "all" || b.sev === sv) && (tm === "all" || b.from === tm || b.to === tm);
+        return (st === "all" || b.status === st) && (sv === "all" || b.sev === sv) &&
+          (dc === "all" || b.discovery === dc) && (tm === "all" || b.from === tm || b.to === tm);
       });
       var sevRank = { high:0, medium:1, low:2, "":3 }, stRank = { fixed:0, repro:1, pending:2 };
       if (sort === "newest") rows.sort(function (a, b) { return (b.number||0) - (a.number||0); });
@@ -223,16 +234,20 @@
       else if (sort === "team") rows.sort(function (a, b) { return String(a.to).localeCompare(String(b.to)) || (b.number||0)-(a.number||0); });
 
       if (!rows.length) { $("feed-table").innerHTML = '<p style="color:var(--muted)">No breaks match.</p>'; return; }
-      var html = "<table><thead><tr><th>State</th><th>Issue</th><th>From → To</th><th>Property</th><th>Class</th><th>Sev</th></tr></thead><tbody>";
+      var html = "<table><thead><tr><th>State</th><th>Found</th><th>Issue</th><th>From → To</th><th>Property</th><th>Class</th><th>Sev</th><th>Pts</th></tr></thead><tbody>";
       rows.forEach(function (b) {
         var title = (b.title || "").replace(/^\[BREAK\]\s*/, "").trim();
         if (title.length > 64) title = title.slice(0, 61) + "…";
         var label = "#" + b.number + (title ? " " + title : "");
         var issue = b.url ? '<a href="' + esc(b.url) + '" target="_blank" rel="noopener">' + esc(label) + "</a>" : esc(label);
         var sevCls = b.sev === "high" ? ' class="sev-high"' : "";
+        var found = b.discovery ? "<span class='badge disc-" + esc(b.discovery) + "'>" + esc(b.discovery) + "</span>" : "—";
+        var pts = (b.status === "pending") ? "—" : (b.points != null ? b.points : "—");
         html += "<tr><td><span class='badge st-" + esc(b.status) + "'>" + esc(b.status) + "</span></td>" +
+          "<td>" + found + "</td>" +
           "<td>" + issue + "</td><td>" + esc(b.from) + " → " + esc(b.to) + "</td>" +
-          "<td>" + esc(b.prop) + "</td><td>" + esc(b.cls) + "</td><td" + sevCls + ">" + esc(b.sev) + "</td></tr>";
+          "<td>" + esc(b.prop) + "</td><td>" + esc(b.cls) + "</td><td" + sevCls + ">" + esc(b.sev) + "</td>" +
+          "<td>" + esc(pts) + "</td></tr>";
       });
       $("feed-table").innerHTML = html + "</tbody></table>";
     }
@@ -265,7 +280,7 @@
 
     function tick() { return Promise.all([renderBoard(), renderGraph(), renderFeed(), renderTeams()]); }
 
-    ["f-status", "f-team", "f-sev", "f-sort"].forEach(function (id) {
+    ["f-status", "f-team", "f-sev", "f-disc", "f-sort"].forEach(function (id) {
       document.addEventListener("change", function (e) { if (e.target && e.target.id === id) renderFeedTable(); });
     });
 

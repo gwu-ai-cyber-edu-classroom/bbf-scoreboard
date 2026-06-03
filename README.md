@@ -28,6 +28,7 @@ scoring:                   # overall Score weights (points)
   high_sev_landed: 5
   fixed: 5
   received: -5
+  duplicate_halflife_minutes: 5   # later duplicates of the same break decay
 history:
   max_points: 1000         # chart length cap
 ```
@@ -45,6 +46,16 @@ A filed issue does **not** score until it is confirmed, but it is always visible
 Facilitators can rule a break out with **`/out-of-scope`** (applies `invalid`; it drops from the feed). For a break to score, the `valid`/`invalid`/`fixed` labels must exist on the repo (the `gen-*-yaml.sh` scripts and `issue-events.yml` create them), the author must be in `teams.yaml`, and it can't be a self-break.
 
 **To confirm by hand** (e.g., testing): comment `/repro-confirmed`, or `gh issue edit <N> -R <org>/<repo> --add-label valid`.
+
+## How Score is calculated
+
+Each team's **Score** is the sum, over its confirmed breaks, of:
+
+- **+`landed`** (default 10) for each confirmed break you filed against another team, **+`high_sev_landed`** (default 5) more if it was high severity;
+- **+`fixed`** (default 5) for each break against you that you closed with a merged PR;
+- **`received`** (default −5) for each confirmed break others landed on you.
+
+**First finder wins, duplicates decay.** Breaks that hit the **same target with the same SPEC property and attack class** are one "group." The earliest-filed confirmed break in a group earns **full** points; a later duplicate earns `base × 0.5 ^ (minutes_after_first / duplicate_halflife_minutes)` — i.e., **halved every ~5 minutes**, decaying toward zero. The same decay reduces the target's `received` penalty for duplicates (one hole ≈ one penalty). The Break feed's **Pts** column shows what each break earned. Pending / invalid / self-authored / unattributed breaks never score. All weights (and the halflife) are tunable in `settings.yaml`.
 
 **To confirm an issue by hand** (e.g., when testing the board): comment `/repro-confirmed` on it, or apply the label directly —
 

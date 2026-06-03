@@ -44,7 +44,8 @@ DEFAULT_SETTINGS = {
         "refresh_seconds": 30,
         "theme": "dark",
     },
-    "scoring": {"landed": 10, "high_sev_landed": 5, "fixed": 5, "received": -5},
+    "scoring": {"landed": 10, "high_sev_landed": 5, "fixed": 5, "received": -5,
+                "duplicate_halflife_minutes": 5},
     "history": {"max_points": 1000},
 }
 
@@ -85,6 +86,7 @@ def write_settings_json(settings: dict) -> None:
         "scoring": {
             "landed": sc["landed"], "highSevLanded": sc["high_sev_landed"],
             "fixed": sc["fixed"], "received": sc["received"],
+            "duplicateHalflifeMinutes": sc.get("duplicate_halflife_minutes", 5),
         },
     }, indent=2) + "\n")
 
@@ -104,7 +106,8 @@ def write_breaks_json(breaks: list[dict], iso: str) -> None:
         "breaks": [{
             "status": b["status"], "from": b["frm"], "to": b["to"],
             "prop": b.get("prop") or "", "cls": b.get("cls") or "",
-            "sev": (b.get("sev") or "").lower(), "title": b.get("title") or "",
+            "sev": (b.get("sev") or "").lower(), "discovery": b.get("discovery") or "",
+            "points": b.get("points", 0), "title": b.get("title") or "",
             "url": b.get("url") or "", "number": b.get("number"),
         } for b in breaks],
     }, indent=2) + "\n")
@@ -158,9 +161,26 @@ def validate(teams: list[dict]) -> list[str]:
 def fetch_issues(repo: str) -> list[dict]:
     return gh_json([
         "issue", "list", "-R", repo, "--state", "all",
-        "--json", "number,author,labels,body,title,url",
+        "--json", "number,author,labels,body,title,url,createdAt",
         "--limit", "1000",
     ])
+
+
+def parse_iso(s: str | None) -> datetime | None:
+    if not s:
+        return None
+    try:
+        return datetime.fromisoformat(s.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def dup_group_key(target_id: str, prop: str | None, cls: str | None) -> tuple:
+    """Two confirmed breaks are 'the same' if they hit the same target with the
+    same SPEC property (P1..P5) and the same attack class. The first one filed
+    earns full credit; later ones decay."""
+    m = re.search(r"\bP[1-5]\b", (prop or "").upper())
+    return (target_id, m.group(0) if m else "?", (cls or "").strip().lower())
 
 
 def fetch_build_status(repo: str) -> str:
@@ -181,7 +201,17 @@ FORM_FIELD_HEADINGS = {
     "severity": "Severity (self-rated)",
     "property_violated": "Property violated",
     "target_artifact": "Target artifact",
+    "discovery": "Discovery method",
 }
+
+
+def normalize_discovery(value: str | None) -> str:
+    v = (value or "").lower()
+    if "white" in v:
+        return "white-box"
+    if "black" in v:
+        return "black-box"
+    return ""
 
 
 def parse_form_field(body: str | None, field_id: str) -> str | None:
@@ -276,8 +306,8 @@ def main() -> int:
     breaks_landed: dict[str, int] = defaultdict(int)
     breaks_received: dict[str, int] = defaultdict(int)
     high_sev_received: dict[str, int] = defaultdict(int)
-    high_sev_landed: dict[str, int] = defaultdict(int)
     fixed: dict[str, int] = defaultdict(int)
+    scored: list[dict] = []  # confirmed, attributed, non-self breaks (for decay scoring)
 
     for t in teams:
         try:
@@ -290,19 +320,19 @@ def main() -> int:
             author = (issue.get("author") or {}).get("login") or ""
             if "invalid" in labels:
                 continue
-            if "valid" in labels:
-                status = "fixed" if "fixed" in labels else "repro"
-            else:
-                status = "pending"
+            status = ("fixed" if "fixed" in labels else "repro") if "valid" in labels else "pending"
+            sev = (parse_form_field(issue.get("body"), "severity") or "").lower()
+            prop = parse_form_field(issue.get("body"), "property_violated")
+            cls = parse_form_field(issue.get("body"), "attack_class")
             frm = tid_to_name.get(login_to_team.get(author, ""), f"@{author}" if author else "?")
-            breaks.append({
+            rec = {
                 "status": status, "frm": frm, "to": t["name"],
-                "prop": parse_form_field(issue.get("body"), "property_violated"),
-                "cls": parse_form_field(issue.get("body"), "attack_class"),
-                "sev": parse_form_field(issue.get("body"), "severity"),
+                "prop": prop, "cls": cls, "sev": sev,
+                "discovery": normalize_discovery(parse_form_field(issue.get("body"), "discovery")),
                 "title": issue.get("title"), "url": issue.get("url"),
-                "number": issue.get("number"),
-            })
+                "number": issue.get("number"), "points": 0,
+            }
+            breaks.append(rec)
             if status == "pending":
                 continue
             breaker = login_to_team.get(author)
@@ -310,19 +340,42 @@ def main() -> int:
                 continue  # unattributed or self-break: shown in the feed, not scored
             breaks_landed[breaker] += 1
             breaks_received[t["id"]] += 1
-            if (parse_form_field(issue.get("body"), "severity") or "").lower() == "high":
+            if sev == "high":
                 high_sev_received[t["id"]] += 1
-                high_sev_landed[breaker] += 1
             if status == "fixed":
                 fixed[t["id"]] += 1
+            scored.append({
+                "rec": rec, "breaker": breaker, "target": t["id"], "high": sev == "high",
+                "group": dup_group_key(t["id"], prop, cls),
+                "created": parse_iso(issue.get("createdAt")) or datetime.now(timezone.utc),
+            })
+
+    # First-finder credit with exponential decay for duplicates of the same break.
+    # The earliest-filed confirmed break in a (target, property, class) group earns
+    # full points; later duplicates decay by 0.5 ** (minutes_after_first / halflife).
+    halflife = float(settings["scoring"].get("duplicate_halflife_minutes", 5)) or 5.0
+    first_at: dict[tuple, datetime] = {}
+    for s in scored:
+        g, c = s["group"], s["created"]
+        if g not in first_at or c < first_at[g]:
+            first_at[g] = c
+
+    landed_pts: dict[str, int] = defaultdict(int)
+    received_pts: dict[str, int] = defaultdict(int)
+    fixed_pts: dict[str, int] = defaultdict(int)
+    for s in scored:
+        dt_min = max(0.0, (s["created"] - first_at[s["group"]]).total_seconds() / 60.0)
+        factor = 0.5 ** (dt_min / halflife)
+        base = w["landed"] + (w["high_sev_landed"] if s["high"] else 0)
+        pts = round(base * factor)
+        s["rec"]["points"] = pts                       # breaker's credit for this break
+        landed_pts[s["breaker"]] += pts
+        received_pts[s["target"]] += round(w["received"] * factor)
+        if s["rec"]["status"] == "fixed":
+            fixed_pts[s["target"]] += w["fixed"]       # fixing always pays full
 
     score = {
-        t["id"]: (
-            w["landed"] * breaks_landed.get(t["id"], 0)
-            + w["high_sev_landed"] * high_sev_landed.get(t["id"], 0)
-            + w["fixed"] * fixed.get(t["id"], 0)
-            + w["received"] * breaks_received.get(t["id"], 0)
-        )
+        t["id"]: landed_pts.get(t["id"], 0) + fixed_pts.get(t["id"], 0) + received_pts.get(t["id"], 0)
         for t in teams
     }
 
