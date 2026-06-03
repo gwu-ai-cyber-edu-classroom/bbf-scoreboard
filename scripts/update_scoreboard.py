@@ -42,6 +42,7 @@ DEFAULT_SETTINGS = {
     "display": {
         "live_updates": True,
         "refresh_seconds": 30,
+        "data_update_minutes": 5,
         "theme": "dark",
         "show_graph": True,
         "show_breaks": True,
@@ -77,6 +78,7 @@ def write_settings_json(settings: dict) -> None:
         "title": settings.get("title", "BBF Scoreboard"),
         "liveUpdates": bool(d.get("live_updates", True)),
         "refreshSeconds": int(d.get("refresh_seconds", 30)),
+        "dataUpdateMinutes": int(d.get("data_update_minutes", 5)),
         "theme": "light" if str(d.get("theme")) == "light" else "dark",
         "showGraph": show_graph,
         "showChart": show_graph,  # legacy alias for older index.html

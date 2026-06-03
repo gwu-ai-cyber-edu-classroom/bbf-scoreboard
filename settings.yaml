@@ -9,7 +9,10 @@ title: "BBF Scoreboard"
 
 display:
   live_updates: true       # auto-refresh the board in the browser
-  refresh_seconds: 30      # refresh cadence (when live_updates is on)
+  refresh_seconds: 30      # browser refresh cadence (when live_updates is on)
+  data_update_minutes: 5   # how often the data recomputes server-side; shown on
+                           # the site — keep in sync with the cron in
+                           # .github/workflows/update-scoreboard.yml
   theme: dark              # dark | light
   show_graph: true         # show the score-over-time graph
   show_breaks: true        # show the Break feed (scannable list of breaks + issue links)

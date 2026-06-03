@@ -16,7 +16,8 @@ Live scoreboard for the Build-it / Break-it / Fix-it day activity.
 title: "BBF Scoreboard"
 display:
   live_updates: true       # browser auto-refresh on/off
-  refresh_seconds: 30      # refresh cadence when live
+  refresh_seconds: 30      # browser refresh cadence when live
+  data_update_minutes: 5   # server recompute cadence shown on the site (match the cron)
   theme: dark              # dark | light
   show_graph: true         # score-over-time graph
   show_breaks: true        # Break feed (scannable list + issue links)

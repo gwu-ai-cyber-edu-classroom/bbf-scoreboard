@@ -107,7 +107,7 @@
   <footer id="foot"></footer>
 
   <script>
-    var DEFAULTS = { title: "BBF Scoreboard", liveUpdates: true, refreshSeconds: 30, theme: "dark", showGraph: true };
+    var DEFAULTS = { title: "BBF Scoreboard", liveUpdates: true, refreshSeconds: 30, dataUpdateMinutes: 5, theme: "dark", showGraph: true };
     var settings = DEFAULTS, chart = null, timer = null;
     var $ = function (id) { return document.getElementById(id); };
     function teamColor(i) { return "hsl(" + ((i * 67) % 360) + " 70% 55%)"; }
@@ -124,9 +124,11 @@
       $("brand-title").textContent = settings.title;
       $("live").style.display = settings.liveUpdates ? "" : "none";
       $("chart-card").style.display = showGraph() ? "" : "none";
-      $("foot").textContent = settings.liveUpdates
-        ? "Auto-refreshing every " + settings.refreshSeconds + "s."
-        : "Live updates off — reload to refresh.";
+      var dataMin = settings.dataUpdateMinutes || 5;
+      var dataNote = "Scores recompute every ~" + dataMin + " min (and immediately on each break/fix).";
+      $("foot").textContent = (settings.liveUpdates
+        ? "This page auto-refreshes every " + settings.refreshSeconds + "s. "
+        : "Live updates off — reload to refresh. ") + dataNote;
       // Chart.js theming
       var css = getComputedStyle(document.documentElement);
       Chart.defaults.color = css.getPropertyValue("--muted").trim();
