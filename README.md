@@ -18,7 +18,8 @@ display:
   live_updates: true       # browser auto-refresh on/off
   refresh_seconds: 30      # refresh cadence when live
   theme: dark              # dark | light
-  show_chart: true         # score-over-time graph
+  show_graph: true         # score-over-time graph
+  show_breaks: true        # Break feed (scannable list + issue links)
   show_pending: true       # Pending column + list
   show_diagnostics: true   # Self-authored / Unattributed lists
 scoring:                   # overall Score weights (points)

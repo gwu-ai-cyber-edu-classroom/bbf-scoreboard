@@ -107,18 +107,23 @@
   <footer id="foot"></footer>
 
   <script>
-    var DEFAULTS = { title: "BBF Scoreboard", liveUpdates: true, refreshSeconds: 30, theme: "dark", showChart: true };
+    var DEFAULTS = { title: "BBF Scoreboard", liveUpdates: true, refreshSeconds: 30, theme: "dark", showGraph: true };
     var settings = DEFAULTS, chart = null, timer = null;
     var $ = function (id) { return document.getElementById(id); };
     function teamColor(i) { return "hsl(" + ((i * 67) % 360) + " 70% 55%)"; }
     function bust(u) { return u + "?_=" + Date.now(); }
+    function showGraph() {
+      if (settings.showGraph !== undefined) return !!settings.showGraph;
+      if (settings.showChart !== undefined) return !!settings.showChart;  // legacy
+      return true;
+    }
 
     function applyChrome() {
       document.documentElement.setAttribute("data-theme", settings.theme === "light" ? "light" : "dark");
       document.title = settings.title;
       $("brand-title").textContent = settings.title;
       $("live").style.display = settings.liveUpdates ? "" : "none";
-      $("chart-card").style.display = settings.showChart ? "" : "none";
+      $("chart-card").style.display = showGraph() ? "" : "none";
       $("foot").textContent = settings.liveUpdates
         ? "Auto-refreshing every " + settings.refreshSeconds + "s."
         : "Live updates off — reload to refresh.";
@@ -145,7 +150,7 @@
     }
 
     function renderChart() {
-      if (!settings.showChart) return Promise.resolve();
+      if (!showGraph()) return Promise.resolve();
       return fetch(bust("scores.json")).then(function (r) { return r.json(); }).then(function (data) {
         var hist = data.history || [], teams = data.teams || [];
         if (!hist.length || !teams.length) throw new Error("no history");

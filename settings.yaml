@@ -11,7 +11,8 @@ display:
   live_updates: true       # auto-refresh the board in the browser
   refresh_seconds: 30      # refresh cadence (when live_updates is on)
   theme: dark              # dark | light
-  show_chart: true         # show the score-over-time graph
+  show_graph: true         # show the score-over-time graph
+  show_breaks: true        # show the Break feed (scannable list of breaks + issue links)
   show_pending: true       # show the Pending column + the Pending list
   show_diagnostics: true   # show the Self-authored / Unattributed lists
 

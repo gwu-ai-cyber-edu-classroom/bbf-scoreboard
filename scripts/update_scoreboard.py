@@ -43,7 +43,8 @@ DEFAULT_SETTINGS = {
         "live_updates": True,
         "refresh_seconds": 30,
         "theme": "dark",
-        "show_chart": True,
+        "show_graph": True,
+        "show_breaks": True,
         "show_pending": True,
         "show_diagnostics": True,
     },
@@ -70,12 +71,15 @@ def load_settings() -> dict:
 def write_settings_json(settings: dict) -> None:
     """Write the client-readable subset index.html consumes."""
     d = settings["display"]
+    # Accept show_graph (preferred) or the legacy show_chart alias.
+    show_graph = bool(d.get("show_graph", d.get("show_chart", True)))
     SETTINGS_JSON.write_text(json.dumps({
         "title": settings.get("title", "BBF Scoreboard"),
         "liveUpdates": bool(d.get("live_updates", True)),
         "refreshSeconds": int(d.get("refresh_seconds", 30)),
         "theme": "light" if str(d.get("theme")) == "light" else "dark",
-        "showChart": bool(d.get("show_chart", True)),
+        "showGraph": show_graph,
+        "showChart": show_graph,  # legacy alias for older index.html
     }, indent=2) + "\n")
 
 
@@ -129,7 +133,7 @@ def validate(teams: list[dict]) -> list[str]:
 def fetch_issues(repo: str) -> list[dict]:
     return gh_json([
         "issue", "list", "-R", repo, "--state", "all",
-        "--json", "number,author,labels,body",
+        "--json", "number,author,labels,body,title,url",
         "--limit", "1000",
     ])
 
@@ -152,7 +156,14 @@ def fetch_build_status(repo: str) -> str:
 FORM_FIELD_HEADINGS = {
     "attack_class": "Attack class",
     "severity": "Severity (self-rated)",
+    "property_violated": "Property violated",
+    "target_artifact": "Target artifact",
 }
+
+
+def md_cell(value) -> str:
+    """Make a string safe for a single Markdown table cell."""
+    return re.sub(r"\s+", " ", str(value or "")).replace("|", "\\|").strip()
 
 
 def parse_form_field(body: str | None, field_id: str) -> str | None:
@@ -189,12 +200,13 @@ def append_history(teams: list[dict], score: dict, iso: str, max_points: int) ->
 def render_scoreboard(
     *, settings, teams, score, breaks_landed, breaks_received, high_sev_received,
     fixed, pending_received, build_status, unattributed, pending, self_authored,
-    iso, utc_fallback,
+    breaks, iso, utc_fallback,
 ) -> str:
     disp = settings["display"]
     w = settings["scoring"]
     show_pending = bool(disp.get("show_pending", True))
     show_diag = bool(disp.get("show_diagnostics", True))
+    show_breaks = bool(disp.get("show_breaks", True))
     ranked = sorted(teams, key=lambda t: score.get(t["id"], 0), reverse=True)
 
     lines: list[str] = [
@@ -227,6 +239,35 @@ def render_scoreboard(
             cells.append(str(pending_received.get(tid, 0)))
         cells += [str(high_sev_received.get(tid, 0)), str(fixed.get(tid, 0))]
         lines.append("| " + " | ".join(cells) + " |")
+
+    if show_breaks and breaks:
+        icon = {"valid": "✅", "fixed": "🛠", "pending": "🕓"}
+        rank = {"fixed": 0, "valid": 1, "pending": 2}
+        feed = sorted(breaks, key=lambda b: (rank.get(b["status"], 3), -(b["number"] or 0)))
+        cap = 60
+        lines += [
+            "",
+            "## Break feed",
+            "",
+            "Confirmed, fixed, and pending breaks — newest first. Click an issue to read the full report.",
+            "",
+            "| | Issue | From → To | Property | Class | Sev |",
+            "|---|---|---|---|---|---|",
+        ]
+        for b in feed[:cap]:
+            title = re.sub(r"^\[BREAK\]\s*", "", (b.get("title") or "")).strip()
+            title = md_cell(title)
+            if len(title) > 60:
+                title = title[:57] + "…"
+            label = f"#{b['number']} {title}".strip()
+            issue = f"[{label}]({b['url']})" if b.get("url") else label
+            lines.append(
+                f"| {icon.get(b['status'], '•')} | {issue} | "
+                f"{md_cell(b.get('frm'))} → {md_cell(b.get('to'))} | "
+                f"{md_cell(b.get('prop'))} | {md_cell(b.get('cls'))} | {md_cell(b.get('sev'))} |"
+            )
+        if len(feed) > cap:
+            lines += ["", f"_…and {len(feed) - cap} more._"]
 
     lines += ["", "## What the columns mean", ""]
     lines.append(
@@ -308,7 +349,9 @@ def main() -> int:
     login_to_team: dict[str, str] = {
         login: t["id"] for t in teams for login in (t.get("members") or [])
     }
+    tid_to_name: dict[str, str] = {t["id"]: t["name"] for t in teams}
 
+    breaks: list[dict] = []  # scannable feed of every non-invalid break
     breaks_landed: dict[str, int] = defaultdict(int)
     breaks_received: dict[str, int] = defaultdict(int)
     high_sev_received: dict[str, int] = defaultdict(int)
@@ -328,6 +371,24 @@ def main() -> int:
         for issue in issues:
             labels = {lbl["name"] for lbl in (issue.get("labels") or [])}
             author = (issue.get("author") or {}).get("login") or ""
+            # Feed record for every non-invalid break.
+            if "invalid" not in labels:
+                if "valid" in labels:
+                    status = "fixed" if "fixed" in labels else "valid"
+                else:
+                    status = "pending"
+                frm = tid_to_name.get(login_to_team.get(author, ""), f"@{author}" if author else "?")
+                breaks.append({
+                    "status": status,
+                    "frm": frm,
+                    "to": t["name"],
+                    "prop": parse_form_field(issue.get("body"), "property_violated"),
+                    "cls": parse_form_field(issue.get("body"), "attack_class"),
+                    "sev": parse_form_field(issue.get("body"), "severity"),
+                    "title": issue.get("title"),
+                    "url": issue.get("url"),
+                    "number": issue.get("number"),
+                })
             if "valid" not in labels:
                 if "invalid" not in labels:
                     pending.append((t["repo"], issue["number"], author))
@@ -373,7 +434,7 @@ def main() -> int:
         high_sev_received=high_sev_received, fixed=fixed,
         pending_received=pending_received, build_status=build_status,
         unattributed=unattributed, pending=pending, self_authored=self_authored,
-        iso=iso, utc_fallback=utc_fallback,
+        breaks=breaks, iso=iso, utc_fallback=utc_fallback,
     )
     (ROOT / "SCOREBOARD.md").write_text(output)
     print(f"SCOREBOARD.md + scores.json + settings.json updated.")

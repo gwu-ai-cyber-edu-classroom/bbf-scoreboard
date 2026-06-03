@@ -19,6 +19,11 @@ env:
   # deprecation warning on each run.
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
+# Serialize runs so a cron tick and a dispatch/push can't race on `git push`.
+concurrency:
+  group: scoreboard-update
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -48,7 +53,12 @@ jobs:
             git config user.email "bbf-scoreboard-bot@users.noreply.github.com"
             git add SCOREBOARD.md scores.json settings.json
             git commit -m "scoreboard: auto-update $(date -u +%FT%TZ)"
-            git push
+            # Rebase-and-retry so a concurrent writer can't reject the push.
+            for attempt in 1 2 3; do
+              git pull --rebase --autostash origin "${GITHUB_REF_NAME:-main}" || true
+              if git push; then echo "pushed"; break; fi
+              echo "push rejected, retrying ($attempt)…"; sleep $(( (RANDOM % 4) + 2 ))
+            done
           else
             echo "No changes to commit."
           fi
