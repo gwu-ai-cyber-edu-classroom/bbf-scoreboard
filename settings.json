@@ -8,6 +8,7 @@
     "landed": 10,
     "highSevLanded": 5,
     "fixed": 5,
-    "received": -5
+    "received": -5,
+    "duplicateHalflifeMinutes": 5
   }
 }
