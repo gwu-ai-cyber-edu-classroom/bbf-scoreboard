@@ -1,0 +1,49 @@
+{
+  "updated": "2026-06-03T14:57:44Z",
+  "breaks": [
+    {
+      "status": "pending",
+      "from": "adamaviv",
+      "to": "theshizaali",
+      "prop": "P2: Correctness to spec",
+      "cls": "input-validation",
+      "sev": "low",
+      "title": "[BREAK] P2: Correctness \u2014 non-string JSON title silently coerced via str() instead of rejected",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali/issues/3",
+      "number": 3
+    },
+    {
+      "status": "pending",
+      "from": "adamaviv",
+      "to": "theshizaali",
+      "prop": "P2: Correctness to spec",
+      "cls": "input-validation",
+      "sev": "low",
+      "title": "[BREAK] P2: Correctness \u2014 redirect silently drops URL path/matrix params (;jsessionid)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali/issues/2",
+      "number": 2
+    },
+    {
+      "status": "pending",
+      "from": "adamaviv",
+      "to": "theshizaali",
+      "prop": "P3: Input discipline",
+      "cls": "input-validation",
+      "sev": "low",
+      "title": "[BREAK] P3: Input discipline \u2014 /api/links 500 crash on non-dict JSON body",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali/issues/1",
+      "number": 1
+    },
+    {
+      "status": "repro",
+      "from": "theshizaali",
+      "to": "adamaviv",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "title": "Denial of Service Attack",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-adamaviv/issues/1",
+      "number": 1
+    }
+  ]
+}

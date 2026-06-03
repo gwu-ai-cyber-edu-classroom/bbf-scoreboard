@@ -1,47 +1,10 @@
 # BBF Scoreboard
 
-_Last updated: <span class="local-time" data-utc="2026-06-03T14:38:29Z">2026-06-03 14:38 UTC</span>_
+_Last updated: <span class="local-time" data-utc="2026-06-03T14:57:44Z">2026-06-03 14:57 UTC</span>_
 
-Ranked by overall **Score** (accumulated). Counts are **confirmed** breaks only — an issue scores once a `/repro-confirmed` comment adds the `valid` label. Column definitions are below the table.
+Ranked by overall **Score**. Confirmed breaks only — a break counts once a `/repro-confirmed` comment adds the `valid` label.
 
-| Rank | Team | Score | Build | Breaks landed | Breaks received | Pending | High-sev received | Fixed |
-|---:|---|---:|---|---:|---:|---:|---:|---:|
-| 1 | theshizaali | **10** | success | 1 | 0 | 3 | 0 | 0 |
-| 2 | adamaviv | **-5** | success | 0 | 1 | 0 | 0 | 0 |
-
-## Break feed
-
-Confirmed, fixed, and pending breaks — newest first. Click an issue to read the full report.
-
-| | Issue | From → To | Property | Class | Sev |
-|---|---|---|---|---|---|
-| ✅ | [#1 Denial of Service Attack](https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-adamaviv/issues/1) | theshizaali → adamaviv |  |  |  |
-| 🕓 | [#3 P2: Correctness — non-string JSON title silently coerced …](https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali/issues/3) | adamaviv → theshizaali | P2: Correctness to spec | input-validation | low |
-| 🕓 | [#2 P2: Correctness — redirect silently drops URL path/matrix…](https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali/issues/2) | adamaviv → theshizaali | P2: Correctness to spec | input-validation | low |
-| 🕓 | [#1 P3: Input discipline — /api/links 500 crash on non-dict J…](https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali/issues/1) | adamaviv → theshizaali | P3: Input discipline | input-validation | low |
-
-## What the columns mean
-
-- **Score** — overall accumulated points: **+10** per break landed, **+5** extra per high-severity break landed, **+5** per fix, **-5** per break received. (Weights are set in `settings.yaml`.)
-- **Build** — latest `build-check.yml` run (`success` / `failure` / `no-runs`).
-- **Breaks landed** — confirmed breaks this team filed against *other* teams (offense).
-- **Breaks received** — confirmed breaks *other* teams filed against this team's app (defense).
-- **Pending** — breaks filed against this team but not yet `/repro-confirmed` (not scored).
-- **High-sev received** — of the breaks received, how many were self-rated high severity.
-- **Fixed** — received breaks closed by a merged PR (issue labeled `fixed`).
-
-## Acting on a break (issue comments)
-
-Put the command on the **first line** of a comment on the Break Report issue:
-
-- `/repro-confirmed` — *(the targeted team)* you reproduced it against your running app. Applies the `valid` label and it scores. Add a line on what you observed.
-- `/repro-failed` — *(the targeted team)* you could **not** reproduce it. Applies `invalid`; say what you tried so the breaker can clarify.
-- `/out-of-scope` — *(facilitators only)* rule a break invalid (unsafe content, off-protocol).
-
-Fixes: open a PR whose body says `closes #N`; when it merges, the issue is auto-labeled `fixed`.
-
-## Pending (filed, not yet `/repro-confirmed`)
-
-- gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali#3 by `adamaviv` — needs `/repro-confirmed` to count
-- gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali#2 by `adamaviv` — needs `/repro-confirmed` to count
-- gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali#1 by `adamaviv` — needs `/repro-confirmed` to count
+| Rank | Team | Score | Build | Landed | Received | High-sev | Fixed |
+|---:|---|---:|---|---:|---:|---:|---:|
+| 1 | theshizaali | **10** | success | 1 | 0 | 0 | 0 |
+| 2 | adamaviv | **-5** | success | 0 | 1 | 0 | 0 |

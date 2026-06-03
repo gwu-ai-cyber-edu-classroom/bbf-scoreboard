@@ -5,5 +5,13 @@
   "dataUpdateMinutes": 5,
   "theme": "dark",
   "showGraph": true,
-  "showChart": true
+  "showBreaks": true,
+  "showColumns": true,
+  "showTeams": true,
+  "scoring": {
+    "landed": 10,
+    "highSevLanded": 5,
+    "fixed": 5,
+    "received": -5
+  }
 }

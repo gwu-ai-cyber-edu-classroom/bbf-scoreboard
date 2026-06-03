@@ -1,0 +1,20 @@
+{
+  "teams": [
+    {
+      "id": "theshizaali",
+      "name": "theshizaali",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali",
+      "members": [
+        "theshizaali"
+      ]
+    },
+    {
+      "id": "adamaviv",
+      "name": "adamaviv",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-adamaviv",
+      "members": [
+        "adamaviv"
+      ]
+    }
+  ]
+}
