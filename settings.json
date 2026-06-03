@@ -2,6 +2,7 @@
   "title": "BBF Scoreboard",
   "liveUpdates": true,
   "refreshSeconds": 30,
+  "dataUpdateMinutes": 5,
   "theme": "dark",
   "showGraph": true,
   "showChart": true
