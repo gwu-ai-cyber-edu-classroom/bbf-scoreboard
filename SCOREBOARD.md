@@ -1,21 +1,21 @@
-# BBF Day Scoreboard
+# BBF Scoreboard
 
-_Last updated: <span class="local-time" data-utc="2026-06-03T14:14:58Z">2026-06-03 14:14 UTC</span>_
+_Last updated: <span class="local-time" data-utc="2026-06-03T14:26:41Z">2026-06-03 14:26 UTC</span>_
 
 Ranked by overall **Score** (accumulated). Counts are **confirmed** breaks only — an issue scores once a `/repro-confirmed` comment adds the `valid` label. Column definitions are below the table.
 
 | Rank | Team | Score | Build | Breaks landed | Breaks received | Pending | High-sev received | Fixed |
 |---:|---|---:|---|---:|---:|---:|---:|---:|
-| 1 | theshizaali | **10** | success | 1 | 0 | 1 | 0 | 0 |
+| 1 | theshizaali | **10** | success | 1 | 0 | 3 | 0 | 0 |
 | 2 | adamaviv | **-5** | success | 0 | 1 | 0 | 0 | 0 |
 
 ## What the columns mean
 
-- **Score** — overall accumulated points: **+10** per break landed, **+5** extra per high-severity break landed, **+5** per fix, **-5** per break received. (Weights are tunable in `update_scoreboard.py`.)
-- **Build** — status of the team's latest `build-check.yml` run (`success` / `failure` / `no-runs`).
+- **Score** — overall accumulated points: **+10** per break landed, **+5** extra per high-severity break landed, **+5** per fix, **-5** per break received. (Weights are set in `settings.yaml`.)
+- **Build** — latest `build-check.yml` run (`success` / `failure` / `no-runs`).
 - **Breaks landed** — confirmed breaks this team filed against *other* teams (offense).
 - **Breaks received** — confirmed breaks *other* teams filed against this team's app (defense).
-- **Pending** — breaks filed against this team but not yet `/repro-confirmed` (not yet scored).
+- **Pending** — breaks filed against this team but not yet `/repro-confirmed` (not scored).
 - **High-sev received** — of the breaks received, how many were self-rated high severity.
 - **Fixed** — received breaks closed by a merged PR (issue labeled `fixed`).
 
@@ -31,4 +31,6 @@ Fixes: open a PR whose body says `closes #N`; when it merges, the issue is auto-
 
 ## Pending (filed, not yet `/repro-confirmed`)
 
+- gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali#3 by `adamaviv` — needs `/repro-confirmed` to count
+- gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali#2 by `adamaviv` — needs `/repro-confirmed` to count
 - gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali#1 by `adamaviv` — needs `/repro-confirmed` to count

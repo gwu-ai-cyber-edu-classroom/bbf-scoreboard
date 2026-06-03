@@ -1,0 +1,7 @@
+{
+  "title": "BBF Scoreboard",
+  "liveUpdates": true,
+  "refreshSeconds": 30,
+  "theme": "dark",
+  "showChart": true
+}
