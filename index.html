@@ -76,11 +76,15 @@
       letter-spacing:.05em; border-radius:5px; padding:.1em .5em; border:1px solid; }
     .st-pending { color:var(--warn); border-color:var(--warn); }
     .st-repro { color:var(--accent); border-color:var(--accent); }
+    .st-fix-review { color:var(--gold); border-color:var(--gold); }
     .st-fixed { color:var(--accent-2); border-color:var(--accent-2); }
     .disc-black-box { color:var(--accent-2); border-color:var(--accent-2); }
     .disc-white-box { color:var(--gold); border-color:var(--gold); }
     .sev-high { color:var(--danger); font-weight:700; }
     .chart-wrap { position:relative; height:340px; }
+    .score-help { margin-top:1em; padding-top:.8em; border-top:1px solid var(--border);
+      color:var(--muted); font-size:.82rem; }
+    .score-help strong { color:var(--head); }
     footer { color:var(--muted); font-family:var(--mono); font-size:.72rem; text-align:center; margin-top:2em; }
   </style>
 </head>
@@ -95,18 +99,19 @@
   <!-- 1. Scores (always visible) -->
   <div id="board" class="card">Loading…</div>
 
-  <!-- 2. Graph (collapsed by default) -->
-  <details id="sec-graph" class="card">
-    <summary>Score over time <span class="hint">click to show</span></summary>
+  <!-- 2. Graph (open by default) -->
+  <details id="sec-graph" class="card" open>
+    <summary>Score over time <span class="hint">click to collapse</span></summary>
     <div class="chart-wrap"><canvas id="scoreChart"></canvas></div>
+    <div id="score-help" class="score-help"></div>
   </details>
 
-  <!-- 3. Break feed (collapsed by default) -->
-  <details id="sec-feed" class="card">
-    <summary>Break feed <span class="hint">click to show</span></summary>
+  <!-- 3. Break feed (open by default) -->
+  <details id="sec-feed" class="card" open>
+    <summary>Break feed <span class="hint">click to collapse</span></summary>
     <div class="controls">
       <label>Status
-        <select id="f-status"><option value="all">all</option><option value="pending">pending</option><option value="repro">repro</option><option value="fixed">fixed</option></select>
+        <select id="f-status"><option value="all">all</option><option value="pending">pending</option><option value="repro">repro</option><option value="fix-review">fix-review</option><option value="fixed">fixed</option></select>
       </label>
       <label>Team <select id="f-team"><option value="all">all</option></select></label>
       <label>Severity
@@ -157,6 +162,15 @@
       var css = getComputedStyle(document.documentElement);
       Chart.defaults.color = css.getPropertyValue("--muted").trim();
       Chart.defaults.borderColor = css.getPropertyValue("--border").trim();
+      var w = settings.scoring || DEFAULTS.scoring, hl = w.duplicateHalflifeMinutes || 5;
+      $("score-help").innerHTML =
+        "<strong>How Score is calculated.</strong> Each team's Score sums its confirmed breaks: " +
+        "<strong>+" + w.landed + "</strong> per break landed (against another team), <strong>+" + w.highSevLanded +
+        "</strong> more if high severity, <strong>+" + w.fixed + "</strong> per fix the breaker confirmed, " +
+        "<strong>" + w.received + "</strong> per break received. " +
+        "<strong>First finder wins:</strong> for the same break (same target + property + attack class) the earliest filer earns full points; " +
+        "later duplicates decay by half every " + hl + " min toward zero. Only confirmed (<code>valid</code>) breaks score; " +
+        "the feed's <strong>Pts</strong> column shows each break's award.";
     }
 
     function renderColumns() {
@@ -176,9 +190,13 @@
         "<p>On the Break Report issue, put the command on the <strong>first line</strong> of a comment:</p><ul>" +
         "<li><code>/repro-confirmed</code> — <em>(targeted team)</em> you reproduced it against your running app → <code>valid</code>; it scores. State <code>repro</code> in the feed.</li>" +
         "<li><code>/repro-failed</code> — <em>(targeted team)</em> you could not reproduce it → <code>invalid</code>; say what you tried.</li>" +
-        "<li><code>/out-of-scope</code> — <em>(facilitators only)</em> rule a break invalid (unsafe / off-protocol).</li></ul>" +
-        "<p><strong>Fixing a break:</strong> open a Pull Request whose body includes <code>closes #N</code> (N = the issue number). " +
-        "When it merges, GitHub closes the issue and it is auto-labeled <code>fixed</code> (State <code>fixed</code> in the feed, +" + w.fixed + " to your Score).</p>" +
+        "<li><code>/out-of-scope</code> — <em>(facilitators only)</em> rule a break invalid (unsafe / off-protocol).</li>" +
+        "<li><code>/fix-confirmed</code> — <em>(the breaker who filed it)</em> you re-tested the fixed app and the break is gone → <code>fixed</code> (it scores).</li>" +
+        "<li><code>/fix-failed</code> — <em>(the breaker)</em> the break still works → the issue reopens (<code>fix-rejected</code>).</li></ul>" +
+        "<p><strong>Fixing a break is a two-step round:</strong> the targeted team opens a PR whose body includes <code>closes #N</code>; " +
+        "on merge the issue closes and becomes <code>fix-claimed</code> (State <strong>fix-review</strong> in the feed). The fix only scores " +
+        "(<strong>+" + w.fixed + "</strong>) once the <em>breaker who filed it</em> re-tests and confirms with <code>/fix-confirmed</code>. " +
+        "If it doesn't hold, the breaker comments <code>/fix-failed</code> and the issue reopens.</p>" +
         "<p><strong>Found (black-box vs white-box):</strong> the Break feed shows how each break was discovered — " +
         "<code>black-box</code> (interface only) or <code>white-box</code> (source-assisted). Per <code>AGENTS_BREAK.md</code>, " +
         "teams work black-box first and only review source after exhausting it.</p>";
@@ -227,7 +245,7 @@
         return (st === "all" || b.status === st) && (sv === "all" || b.sev === sv) &&
           (dc === "all" || b.discovery === dc) && (tm === "all" || b.from === tm || b.to === tm);
       });
-      var sevRank = { high:0, medium:1, low:2, "":3 }, stRank = { fixed:0, repro:1, pending:2 };
+      var sevRank = { high:0, medium:1, low:2, "":3 }, stRank = { fixed:0, "fix-review":1, repro:2, pending:3 };
       if (sort === "newest") rows.sort(function (a, b) { return (b.number||0) - (a.number||0); });
       else if (sort === "status") rows.sort(function (a, b) { return (stRank[a.status]??9) - (stRank[b.status]??9) || (b.number||0)-(a.number||0); });
       else if (sort === "severity") rows.sort(function (a, b) { return (sevRank[a.sev]??9) - (sevRank[b.sev]??9) || (b.number||0)-(a.number||0); });

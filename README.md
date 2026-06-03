@@ -41,9 +41,10 @@ A filed issue does **not** score until it is confirmed, but it is always visible
 
 - **pending** — filed, not yet `/repro-confirmed`.
 - **repro** — the targeted team commented **`/repro-confirmed`**; the `issue-events` workflow added the `valid` label and it now scores.
-- **fixed** — closed by a merged PR whose body said `closes #N` (auto-labeled `fixed`).
+- **fix-review** — the target merged a PR (`closes #N`) so the issue is `fix-claimed`, but the fix is **awaiting the breaker's confirmation** (it does not score the fix yet).
+- **fixed** — the **breaker** (the team that filed it) re-tested and commented **`/fix-confirmed`**; the fix scores.
 
-Facilitators can rule a break out with **`/out-of-scope`** (applies `invalid`; it drops from the feed). For a break to score, the `valid`/`invalid`/`fixed` labels must exist on the repo (the `gen-*-yaml.sh` scripts and `issue-events.yml` create them), the author must be in `teams.yaml`, and it can't be a self-break.
+**Fix-review round:** a fix isn't credited on the target's say-so. After the target merges `closes #N` (→ `fix-claimed` / *fix-review*), the team that filed the break re-runs it and comments **`/fix-confirmed`** (→ `fixed`, scores) or **`/fix-failed`** (→ reopens, `fix-rejected`). Facilitators can rule a break out with **`/out-of-scope`**. The state labels are auto-created by `issue-events.yml`; the author must be in `teams.yaml` and it can't be a self-break to score.
 
 **To confirm by hand** (e.g., testing): comment `/repro-confirmed`, or `gh issue edit <N> -R <org>/<repo> --add-label valid`.
 

@@ -320,7 +320,15 @@ def main() -> int:
             author = (issue.get("author") or {}).get("login") or ""
             if "invalid" in labels:
                 continue
-            status = ("fixed" if "fixed" in labels else "repro") if "valid" in labels else "pending"
+            if "valid" in labels:
+                if "fixed" in labels:           # breaker-confirmed fix
+                    status = "fixed"
+                elif "fix-claimed" in labels:   # fix merged, awaiting breaker confirmation
+                    status = "fix-review"
+                else:
+                    status = "repro"
+            else:
+                status = "pending"
             sev = (parse_form_field(issue.get("body"), "severity") or "").lower()
             prop = parse_form_field(issue.get("body"), "property_violated")
             cls = parse_form_field(issue.get("body"), "attack_class")
