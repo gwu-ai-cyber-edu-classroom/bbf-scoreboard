@@ -1,71 +1,156 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="refresh" content="30">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>BBF Day Scoreboard</title>
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.1/github-markdown-light.min.css">
-  <style>
-    body {
-      max-width: 960px;
-      margin: 2em auto;
-      padding: 0 1em;
-      font-family: system-ui, sans-serif;
-    }
-    .markdown-body { padding: 1em 2em; }
-    .markdown-body table { width: 100%; }
-    .markdown-body th, .markdown-body td { padding: 8px 12px; }
-    .chart-wrap { position: relative; height: 360px; }
-    footer {
-      color: #6e7781;
-      font-size: 0.85em;
-      text-align: center;
-      margin-top: 2em;
-    }
-  </style>
+  <title>BBF Scoreboard</title>
   <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0a0e14; --panel: #0f1620; --panel-2: #131c28; --border: #1f2b3a;
+      --text: #cdd9e5; --muted: #7a8aa0; --head: #e6edf3;
+      --accent: #3fb950; --accent-2: #2f81f7; --danger: #f85149; --gold: #e3b341;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+    html[data-theme="light"] {
+      --bg: #f6f8fa; --panel: #ffffff; --panel-2: #f0f3f6; --border: #d0d7de;
+      --text: #1f2328; --muted: #636c76; --head: #0d1117;
+      --accent: #1a7f37; --accent-2: #0969da; --danger: #cf222e; --gold: #9a6700;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg); color: var(--text); font-family: var(--sans);
+      max-width: 1000px; margin: 0 auto; padding: 1.5em 1.25em 3em;
+      line-height: 1.5; -webkit-font-smoothing: antialiased;
+    }
+    .topbar {
+      display: flex; align-items: center; gap: .75em; flex-wrap: wrap;
+      border-bottom: 1px solid var(--border); padding-bottom: .8em; margin-bottom: 1.2em;
+    }
+    .brand {
+      font-family: var(--mono); font-weight: 700; font-size: 1.35rem; color: var(--head);
+      letter-spacing: .02em;
+    }
+    .brand .tick { color: var(--accent); }
+    .live {
+      display: inline-flex; align-items: center; gap: .45em; font-family: var(--mono);
+      font-size: .72rem; color: var(--accent); border: 1px solid var(--accent);
+      border-radius: 999px; padding: .15em .6em; text-transform: uppercase; letter-spacing: .08em;
+    }
+    .live .dot {
+      width: .55em; height: .55em; border-radius: 50%; background: var(--accent);
+      box-shadow: 0 0 0 0 var(--accent); animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(63,185,80,.6); }
+      70% { box-shadow: 0 0 0 .5em rgba(63,185,80,0); }
+      100% { box-shadow: 0 0 0 0 rgba(63,185,80,0); }
+    }
+    .spacer { flex: 1; }
+    .updated { font-family: var(--mono); font-size: .75rem; color: var(--muted); }
+
+    .card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1em 1.25em; margin: 1em 0;
+    }
+    h1 { display: none; }            /* board title comes from the topbar brand */
+    h2 {
+      font-family: var(--mono); font-size: .85rem; text-transform: uppercase;
+      letter-spacing: .12em; color: var(--accent); margin: 1.4em 0 .6em;
+    }
+    p { color: var(--text); }
+    em { color: var(--muted); font-style: normal; }
+    a { color: var(--accent-2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code {
+      font-family: var(--mono); font-size: .85em; background: var(--panel-2);
+      border: 1px solid var(--border); border-radius: 5px; padding: .08em .4em; color: var(--head);
+    }
+    ul { padding-left: 1.2em; }
+    li { margin: .25em 0; }
+
+    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    th, td { padding: .55em .7em; text-align: left; border-bottom: 1px solid var(--border); }
+    th {
+      font-family: var(--mono); font-size: .72rem; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--muted); border-bottom: 2px solid var(--border);
+    }
+    td { font-family: var(--mono); color: var(--head); }
+    td:nth-child(2) { font-family: var(--sans); }       /* Team name */
+    tbody tr:hover { background: var(--panel-2); }
+    tbody tr:first-child td { color: var(--gold); }      /* leader */
+    td strong { color: var(--accent); }                  /* Score */
+    th:nth-child(n+3), td:nth-child(n+3) { text-align: right; }
+    th:nth-child(2), td:nth-child(2) { text-align: left; }
+
+    .chart-wrap { position: relative; height: 340px; }
+    footer { color: var(--muted); font-family: var(--mono); font-size: .72rem; text-align: center; margin-top: 2em; }
+  </style>
 </head>
 <body>
-  <div id="scoreboard" class="markdown-body">Loading…</div>
+  <div class="topbar">
+    <span class="brand"><span class="tick">&gt;_</span> <span id="brand-title">BBF Scoreboard</span></span>
+    <span id="live" class="live"><span class="dot"></span> live</span>
+    <span class="spacer"></span>
+    <span class="updated" id="updated"></span>
+  </div>
 
-  <section class="markdown-body">
+  <div id="board" class="card">Loading…</div>
+
+  <section id="chart-card" class="card">
     <h2>Score over time</h2>
     <div class="chart-wrap"><canvas id="scoreChart"></canvas></div>
   </section>
 
-  <footer>Auto-refreshes every 30 seconds.</footer>
+  <footer id="foot"></footer>
 
   <script>
-    function teamColor(i) { return 'hsl(' + ((i * 67) % 360) + ' 70% 45%)'; }
+    var DEFAULTS = { title: "BBF Scoreboard", liveUpdates: true, refreshSeconds: 30, theme: "dark", showChart: true };
+    var settings = DEFAULTS, chart = null, timer = null;
+    var $ = function (id) { return document.getElementById(id); };
+    function teamColor(i) { return "hsl(" + ((i * 67) % 360) + " 70% 55%)"; }
+    function bust(u) { return u + "?_=" + Date.now(); }
 
-    // Scoreboard table (Markdown), with the timestamp shown in local time.
-    fetch('SCOREBOARD.md?_=' + Date.now())
-      .then(function (r) { return r.text(); })
-      .then(function (t) {
-        var el = document.getElementById('scoreboard');
+    function applyChrome() {
+      document.documentElement.setAttribute("data-theme", settings.theme === "light" ? "light" : "dark");
+      document.title = settings.title;
+      $("brand-title").textContent = settings.title;
+      $("live").style.display = settings.liveUpdates ? "" : "none";
+      $("chart-card").style.display = settings.showChart ? "" : "none";
+      $("foot").textContent = settings.liveUpdates
+        ? "Auto-refreshing every " + settings.refreshSeconds + "s."
+        : "Live updates off — reload to refresh.";
+      // Chart.js theming
+      var css = getComputedStyle(document.documentElement);
+      Chart.defaults.color = css.getPropertyValue("--muted").trim();
+      Chart.defaults.borderColor = css.getPropertyValue("--border").trim();
+    }
+
+    function renderBoard() {
+      return fetch(bust("SCOREBOARD.md")).then(function (r) { return r.text(); }).then(function (t) {
+        var el = $("board");
         el.innerHTML = marked.parse(t);
-        el.querySelectorAll('[data-utc]').forEach(function (span) {
-          var d = new Date(span.getAttribute('data-utc'));
-          if (!isNaN(d.getTime())) { span.textContent = d.toLocaleString(); }
+        el.querySelectorAll("[data-utc]").forEach(function (span) {
+          var d = new Date(span.getAttribute("data-utc"));
+          if (!isNaN(d.getTime())) {
+            span.textContent = d.toLocaleString();
+            $("updated").textContent = "updated " + d.toLocaleTimeString();
+          }
         });
-      })
-      .catch(function (e) {
-        document.getElementById('scoreboard').innerHTML =
-          '<p style="color:#cf222e">Could not load SCOREBOARD.md: ' + e + '</p>';
+      }).catch(function (e) {
+        $("board").innerHTML = '<p style="color:var(--danger)">Could not load SCOREBOARD.md: ' + e + "</p>";
       });
+    }
 
-    // Live score-over-time chart from scores.json.
-    fetch('scores.json?_=' + Date.now())
-      .then(function (r) { return r.json(); })
-      .then(function (data) {
-        var hist = data.history || [];
-        var teams = data.teams || [];
-        if (!hist.length || !teams.length) { throw new Error('no history'); }
+    function renderChart() {
+      if (!settings.showChart) return Promise.resolve();
+      return fetch(bust("scores.json")).then(function (r) { return r.json(); }).then(function (data) {
+        var hist = data.history || [], teams = data.teams || [];
+        if (!hist.length || !teams.length) throw new Error("no history");
         var labels = hist.map(function (h) {
-          return new Date(h.t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          return new Date(h.t).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
         });
         var datasets = teams.map(function (tm, i) {
           return {
@@ -74,32 +159,47 @@
               var s = h.scores || {};
               return Object.prototype.hasOwnProperty.call(s, tm.id) ? s[tm.id] : null;
             }),
-            borderColor: teamColor(i),
-            backgroundColor: teamColor(i),
-            tension: 0.25,
-            spanGaps: true
+            borderColor: teamColor(i), backgroundColor: teamColor(i),
+            tension: 0.25, spanGaps: true, pointRadius: 2
           };
         });
-        new Chart(document.getElementById('scoreChart'), {
-          type: 'line',
+        if (chart) chart.destroy();
+        chart = new Chart($("scoreChart"), {
+          type: "line",
           data: { labels: labels, datasets: datasets },
           options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: false,
-            interaction: { mode: 'index', intersect: false },
+            responsive: true, maintainAspectRatio: false, animation: false,
+            interaction: { mode: "index", intersect: false },
             scales: {
-              y: { title: { display: true, text: 'Score' } },
-              x: { title: { display: true, text: 'Time (local)' }, ticks: { maxTicksLimit: 12 } }
+              y: { title: { display: true, text: "Score" } },
+              x: { title: { display: true, text: "Time (local)" }, ticks: { maxTicksLimit: 12 } }
             },
-            plugins: { legend: { position: 'bottom' } }
+            plugins: { legend: { position: "bottom" } }
           }
         });
-      })
-      .catch(function () {
-        var c = document.getElementById('scoreChart');
-        if (c) { c.parentNode.innerHTML = '<p style="color:#6e7781">No score history yet — the chart fills in as the updater runs.</p>'; }
+      }).catch(function () {
+        var c = $("scoreChart");
+        if (c) c.parentNode.innerHTML = '<p style="color:var(--muted)">No score history yet — the chart fills in as the updater runs.</p>';
       });
+    }
+
+    function tick() { return Promise.all([renderBoard(), renderChart()]); }
+
+    function start() {
+      fetch(bust("settings.json"))
+        .then(function (r) { return r.json(); })
+        .then(function (s) { settings = Object.assign({}, DEFAULTS, s); })
+        .catch(function () { settings = DEFAULTS; })
+        .finally(function () {
+          applyChrome();
+          tick();
+          if (timer) clearInterval(timer);
+          if (settings.liveUpdates) {
+            timer = setInterval(tick, Math.max(5, settings.refreshSeconds) * 1000);
+          }
+        });
+    }
+    start();
   </script>
 </body>
 </html>

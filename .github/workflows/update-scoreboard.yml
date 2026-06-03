@@ -7,6 +7,7 @@ on:
   push:
     paths:
       - teams.yaml
+      - settings.yaml
       - scripts/update_scoreboard.py
 
 permissions:
@@ -42,10 +43,10 @@ jobs:
 
       - name: Commit if changed
         run: |
-          if [[ -n "$(git status --porcelain SCOREBOARD.md scores.json)" ]]; then
+          if [[ -n "$(git status --porcelain SCOREBOARD.md scores.json settings.json)" ]]; then
             git config user.name "bbf-scoreboard-bot"
             git config user.email "bbf-scoreboard-bot@users.noreply.github.com"
-            git add SCOREBOARD.md scores.json
+            git add SCOREBOARD.md scores.json settings.json
             git commit -m "scoreboard: auto-update $(date -u +%FT%TZ)"
             git push
           else

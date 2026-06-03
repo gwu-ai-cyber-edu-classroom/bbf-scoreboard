@@ -1,0 +1,26 @@
+# BBF scoreboard settings — edit and commit.
+#
+# On the next run the updater regenerates SCOREBOARD.md, scores.json, and
+# settings.json; index.html reads settings.json on load. A push to this file
+# also triggers a refresh.
+
+# Page heading / browser title.
+title: "BBF Scoreboard"
+
+display:
+  live_updates: true       # auto-refresh the board in the browser
+  refresh_seconds: 30      # refresh cadence (when live_updates is on)
+  theme: dark              # dark | light
+  show_chart: true         # show the score-over-time graph
+  show_pending: true       # show the Pending column + the Pending list
+  show_diagnostics: true   # show the Self-authored / Unattributed lists
+
+# Overall Score weights (points). Tune freely.
+scoring:
+  landed: 10               # per confirmed break you filed against another team
+  high_sev_landed: 5       # extra, per high-severity break landed
+  fixed: 5                 # per break against you closed by a merged PR
+  received: -5             # per confirmed break others landed on you
+
+history:
+  max_points: 1000         # cap on scores.json datapoints (chart length)

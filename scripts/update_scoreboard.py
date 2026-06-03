@@ -1,19 +1,16 @@
 #!/usr/bin/env python3
-"""Update SCOREBOARD.md (and scores.json) from teams.yaml using the `gh` CLI.
+"""Update SCOREBOARD.md, scores.json, and settings.json from teams.yaml +
+settings.yaml using the `gh` CLI.
 
 Logic:
-  1. Load teams.yaml. Validate schema. Resolve every repo and every member
-     login. Exit non-zero on failure -- the workflow run will show red.
+  1. Load teams.yaml + settings.yaml. Validate the roster. Exit non-zero on
+     failure -- the workflow run will show red.
   2. For each team repo, list all issues with author + labels (one gh call).
-  3. For each `valid`-labeled issue:
-       - look up the author's team via the login -> team_id map
-       - increment breaks_landed for the author's team
-       - increment breaks_received for the repo's team
-       - increment severity / fixed counters as labels indicate
-  4. Compute an overall accumulated Score per team (tunable weights below).
-  5. For each team repo, fetch the latest `build-check.yml` run conclusion.
-  6. Render SCOREBOARD.md (leaderboard, sorted by Score) and append the current
-     scores to scores.json for the live time-series chart in index.html.
+  3. For each `valid`-labeled issue, attribute landed/received + severity/fixed.
+  4. Compute an overall accumulated Score per team (weights from settings.yaml).
+  5. Fetch the latest build-check.yml conclusion per repo.
+  6. Render SCOREBOARD.md (leaderboard), append scores.json (chart history), and
+     write settings.json (client subset for index.html).
 
 Usage:
     python update_scoreboard.py [--validate-only]
@@ -37,29 +34,61 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parent.parent
 SCORES_JSON = ROOT / "scores.json"
+SETTINGS_YAML = ROOT / "settings.yaml"
+SETTINGS_JSON = ROOT / "settings.json"
 
-# --- Scoring weights (tune freely) -------------------------------------------
-# Overall Score is a single accumulated number per team.
-SCORE_LANDED = 10      # per confirmed break you filed against another team (offense)
-SCORE_HIGH_SEV = 5     # extra, per high-severity break you landed
-SCORE_FIXED = 5        # per break against you that you closed with a merged PR
-SCORE_RECEIVED = -5    # per confirmed break others landed on you (a hole in your app)
-MAX_HISTORY_POINTS = 1000  # cap scores.json growth
+DEFAULT_SETTINGS = {
+    "title": "BBF Scoreboard",
+    "display": {
+        "live_updates": True,
+        "refresh_seconds": 30,
+        "theme": "dark",
+        "show_chart": True,
+        "show_pending": True,
+        "show_diagnostics": True,
+    },
+    "scoring": {"landed": 10, "high_sev_landed": 5, "fixed": 5, "received": -5},
+    "history": {"max_points": 1000},
+}
+
+
+def load_settings() -> dict:
+    """Deep-merge settings.yaml over DEFAULT_SETTINGS (missing file == defaults)."""
+    merged = json.loads(json.dumps(DEFAULT_SETTINGS))  # deep copy
+    try:
+        user = yaml.safe_load(SETTINGS_YAML.read_text()) or {}
+    except FileNotFoundError:
+        user = {}
+    for key, val in user.items():
+        if isinstance(val, dict) and isinstance(merged.get(key), dict):
+            merged[key].update(val)
+        else:
+            merged[key] = val
+    return merged
+
+
+def write_settings_json(settings: dict) -> None:
+    """Write the client-readable subset index.html consumes."""
+    d = settings["display"]
+    SETTINGS_JSON.write_text(json.dumps({
+        "title": settings.get("title", "BBF Scoreboard"),
+        "liveUpdates": bool(d.get("live_updates", True)),
+        "refreshSeconds": int(d.get("refresh_seconds", 30)),
+        "theme": "light" if str(d.get("theme")) == "light" else "dark",
+        "showChart": bool(d.get("show_chart", True)),
+    }, indent=2) + "\n")
 
 
 def gh_json(args: list[str]) -> object:
-    """Run `gh <args>` and parse its JSON output."""
     out = subprocess.check_output(["gh", *args], text=True)
     return json.loads(out)
 
 
 def gh_check(args: list[str]) -> bool:
-    """Run `gh <args>`; return True if exit 0, False otherwise."""
     return subprocess.run(["gh", *args], capture_output=True).returncode == 0
 
 
 def validate(teams: list[dict]) -> list[str]:
-    """Schema-validate teams.yaml. Returns list of problem strings; empty == OK."""
     problems: list[str] = []
     seen_logins: dict[str, str] = {}
     seen_ids: set[str] = set()
@@ -98,7 +127,6 @@ def validate(teams: list[dict]) -> list[str]:
 
 
 def fetch_issues(repo: str) -> list[dict]:
-    """Return all issues in repo with number, author, labels, body."""
     return gh_json([
         "issue", "list", "-R", repo, "--state", "all",
         "--json", "number,author,labels,body",
@@ -107,7 +135,6 @@ def fetch_issues(repo: str) -> list[dict]:
 
 
 def fetch_build_status(repo: str) -> str:
-    """Conclusion of the most recent run of build-check.yml on the repo."""
     try:
         runs = gh_json([
             "run", "list", "-R", repo,
@@ -122,7 +149,6 @@ def fetch_build_status(repo: str) -> str:
         return "error"
 
 
-# Map our YAML form `id` to the heading label GitHub renders in the issue body.
 FORM_FIELD_HEADINGS = {
     "attack_class": "Attack class",
     "severity": "Severity (self-rated)",
@@ -130,7 +156,6 @@ FORM_FIELD_HEADINGS = {
 
 
 def parse_form_field(body: str | None, field_id: str) -> str | None:
-    """Extract a field value from a GitHub issue-form body."""
     if not body:
         return None
     label = FORM_FIELD_HEADINGS.get(field_id, field_id)
@@ -145,8 +170,7 @@ def parse_form_field(body: str | None, field_id: str) -> str | None:
     return None
 
 
-def append_history(teams: list[dict], score: dict, iso: str) -> None:
-    """Append the current per-team scores to scores.json for the live chart."""
+def append_history(teams: list[dict], score: dict, iso: str, max_points: int) -> None:
     try:
         data = json.loads(SCORES_JSON.read_text())
         if not isinstance(data, dict):
@@ -157,64 +181,68 @@ def append_history(teams: list[dict], score: dict, iso: str) -> None:
     data.setdefault("history", []).append(
         {"t": iso, "scores": {t["id"]: score.get(t["id"], 0) for t in teams}}
     )
-    data["history"] = data["history"][-MAX_HISTORY_POINTS:]
+    if max_points > 0:
+        data["history"] = data["history"][-max_points:]
     SCORES_JSON.write_text(json.dumps(data, indent=2) + "\n")
 
 
 def render_scoreboard(
-    teams: list[dict],
-    score: dict,
-    breaks_landed: dict,
-    breaks_received: dict,
-    high_sev_received: dict,
-    fixed: dict,
-    pending_received: dict,
-    build_status: dict,
-    unattributed: list,
-    pending: list,
-    self_authored: list,
-    iso: str,
-    utc_fallback: str,
+    *, settings, teams, score, breaks_landed, breaks_received, high_sev_received,
+    fixed, pending_received, build_status, unattributed, pending, self_authored,
+    iso, utc_fallback,
 ) -> str:
+    disp = settings["display"]
+    w = settings["scoring"]
+    show_pending = bool(disp.get("show_pending", True))
+    show_diag = bool(disp.get("show_diagnostics", True))
     ranked = sorted(teams, key=lambda t: score.get(t["id"], 0), reverse=True)
+
     lines: list[str] = [
-        "# BBF Day Scoreboard",
+        f"# {settings.get('title', 'BBF Scoreboard')}",
         "",
-        # index.html rewrites this to the viewer's local timezone; the UTC text
-        # is the fallback shown in a raw Markdown view.
         f'_Last updated: <span class="local-time" data-utc="{iso}">{utc_fallback}</span>_',
         "",
         "Ranked by overall **Score** (accumulated). Counts are **confirmed** breaks only — an "
         "issue scores once a `/repro-confirmed` comment adds the `valid` label. Column "
         "definitions are below the table.",
         "",
-        "| Rank | Team | Score | Build | Breaks landed | Breaks received | Pending | High-sev received | Fixed |",
-        "|---:|---|---:|---|---:|---:|---:|---:|---:|",
     ]
+
+    headers = ["Rank", "Team", "Score", "Build", "Breaks landed", "Breaks received"]
+    aligns = ["---:", "---", "---:", "---", "---:", "---:"]
+    if show_pending:
+        headers.append("Pending")
+        aligns.append("---:")
+    headers += ["High-sev received", "Fixed"]
+    aligns += ["---:", "---:"]
+    lines.append("| " + " | ".join(headers) + " |")
+    lines.append("|" + "|".join(aligns) + "|")
     for i, t in enumerate(ranked, start=1):
         tid = t["id"]
-        lines.append(
-            f"| {i} | {t['name']} | **{score.get(tid, 0)}** | {build_status.get(tid, '?')} | "
-            f"{breaks_landed.get(tid, 0)} | "
-            f"{breaks_received.get(tid, 0)} | "
-            f"{pending_received.get(tid, 0)} | "
-            f"{high_sev_received.get(tid, 0)} | "
-            f"{fixed.get(tid, 0)} |"
-        )
+        cells = [
+            str(i), t["name"], f"**{score.get(tid, 0)}**", str(build_status.get(tid, "?")),
+            str(breaks_landed.get(tid, 0)), str(breaks_received.get(tid, 0)),
+        ]
+        if show_pending:
+            cells.append(str(pending_received.get(tid, 0)))
+        cells += [str(high_sev_received.get(tid, 0)), str(fixed.get(tid, 0))]
+        lines.append("| " + " | ".join(cells) + " |")
+
+    lines += ["", "## What the columns mean", ""]
+    lines.append(
+        f"- **Score** — overall accumulated points: **+{w['landed']}** per break landed, "
+        f"**+{w['high_sev_landed']}** extra per high-severity break landed, **+{w['fixed']}** per "
+        f"fix, **{w['received']}** per break received. (Weights are set in `settings.yaml`.)"
+    )
+    lines.append("- **Build** — latest `build-check.yml` run (`success` / `failure` / `no-runs`).")
+    lines.append("- **Breaks landed** — confirmed breaks this team filed against *other* teams (offense).")
+    lines.append("- **Breaks received** — confirmed breaks *other* teams filed against this team's app (defense).")
+    if show_pending:
+        lines.append("- **Pending** — breaks filed against this team but not yet `/repro-confirmed` (not scored).")
+    lines.append("- **High-sev received** — of the breaks received, how many were self-rated high severity.")
+    lines.append("- **Fixed** — received breaks closed by a merged PR (issue labeled `fixed`).")
 
     lines += [
-        "",
-        "## What the columns mean",
-        "",
-        f"- **Score** — overall accumulated points: **+{SCORE_LANDED}** per break landed, "
-        f"**+{SCORE_HIGH_SEV}** extra per high-severity break landed, **+{SCORE_FIXED}** per fix, "
-        f"**{SCORE_RECEIVED}** per break received. (Weights are tunable in `update_scoreboard.py`.)",
-        "- **Build** — status of the team's latest `build-check.yml` run (`success` / `failure` / `no-runs`).",
-        "- **Breaks landed** — confirmed breaks this team filed against *other* teams (offense).",
-        "- **Breaks received** — confirmed breaks *other* teams filed against this team's app (defense).",
-        "- **Pending** — breaks filed against this team but not yet `/repro-confirmed` (not yet scored).",
-        "- **High-sev received** — of the breaks received, how many were self-rated high severity.",
-        "- **Fixed** — received breaks closed by a merged PR (issue labeled `fixed`).",
         "",
         "## Acting on a break (issue comments)",
         "",
@@ -226,36 +254,31 @@ def render_scoreboard(
         "say what you tried so the breaker can clarify.",
         "- `/out-of-scope` — *(facilitators only)* rule a break invalid (unsafe content, off-protocol).",
         "",
-        "Fixes: open a PR whose body says `closes #N`; when it merges, the issue is auto-labeled "
-        "`fixed`.",
+        "Fixes: open a PR whose body says `closes #N`; when it merges, the issue is auto-labeled `fixed`.",
     ]
 
-    if pending:
+    if show_pending and pending:
         lines += ["", "## Pending (filed, not yet `/repro-confirmed`)", ""]
         for repo, num, author in pending:
             lines.append(f"- {repo}#{num} by `{author}` — needs `/repro-confirmed` to count")
-    if self_authored:
+    if show_diag and self_authored:
         lines += ["", "## Self-authored valid breaks (not counted)", ""]
         for repo, num, author in self_authored:
-            lines.append(
-                f"- {repo}#{num} by `{author}` — you can't score a break against your own repo"
-            )
-    if unattributed:
+            lines.append(f"- {repo}#{num} by `{author}` — you can't score a break against your own repo")
+    if show_diag and unattributed:
         lines += ["", "## Unattributed issues (author not on any team)", ""]
         for repo, num, author in unattributed:
-            lines.append(
-                f"- {repo}#{num} authored by `{author}` — add `{author}` to teams.yaml to attribute it"
-            )
+            lines.append(f"- {repo}#{num} authored by `{author}` — add `{author}` to teams.yaml to attribute it")
     return "\n".join(lines) + "\n"
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--validate-only", action="store_true",
-        help="Validate teams.yaml and exit; do not rebuild SCOREBOARD.md.",
-    )
+    parser.add_argument("--validate-only", action="store_true",
+                        help="Validate teams.yaml and exit; do not rebuild outputs.")
     args = parser.parse_args()
+
+    settings = load_settings()
 
     teams_path = ROOT / "teams.yaml"
     if not teams_path.exists():
@@ -275,13 +298,15 @@ def main() -> int:
         return 1
     print(f"teams.yaml OK: {len(teams)} teams.")
 
+    # Always (re)write settings.json so index.html stays in sync with settings.yaml.
+    write_settings_json(settings)
+
     if args.validate_only:
         return 0
 
+    w = settings["scoring"]
     login_to_team: dict[str, str] = {
-        login: t["id"]
-        for t in teams
-        for login in (t.get("members") or [])
+        login: t["id"] for t in teams for login in (t.get("members") or [])
     }
 
     breaks_landed: dict[str, int] = defaultdict(int)
@@ -324,15 +349,14 @@ def main() -> int:
             if "fixed" in labels:
                 fixed[t["id"]] += 1
 
-    # Overall accumulated score per team.
     score: dict[str, int] = {}
     for t in teams:
         tid = t["id"]
         score[tid] = (
-            SCORE_LANDED * breaks_landed.get(tid, 0)
-            + SCORE_HIGH_SEV * high_sev_landed.get(tid, 0)
-            + SCORE_FIXED * fixed.get(tid, 0)
-            + SCORE_RECEIVED * breaks_received.get(tid, 0)
+            w["landed"] * breaks_landed.get(tid, 0)
+            + w["high_sev_landed"] * high_sev_landed.get(tid, 0)
+            + w["fixed"] * fixed.get(tid, 0)
+            + w["received"] * breaks_received.get(tid, 0)
         )
 
     build_status = {t["id"]: fetch_build_status(t["repo"]) for t in teams}
@@ -341,25 +365,18 @@ def main() -> int:
     iso = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     utc_fallback = now.strftime("%Y-%m-%d %H:%M UTC")
 
-    append_history(teams, score, iso)
+    append_history(teams, score, iso, int(settings["history"].get("max_points", 1000)))
 
     output = render_scoreboard(
-        teams=teams,
-        score=score,
-        breaks_landed=breaks_landed,
-        breaks_received=breaks_received,
-        high_sev_received=high_sev_received,
-        fixed=fixed,
-        pending_received=pending_received,
-        build_status=build_status,
-        unattributed=unattributed,
-        pending=pending,
-        self_authored=self_authored,
-        iso=iso,
-        utc_fallback=utc_fallback,
+        settings=settings, teams=teams, score=score,
+        breaks_landed=breaks_landed, breaks_received=breaks_received,
+        high_sev_received=high_sev_received, fixed=fixed,
+        pending_received=pending_received, build_status=build_status,
+        unattributed=unattributed, pending=pending, self_authored=self_authored,
+        iso=iso, utc_fallback=utc_fallback,
     )
     (ROOT / "SCOREBOARD.md").write_text(output)
-    print(f"SCOREBOARD.md updated ({len(output)} bytes); scores.json appended.")
+    print(f"SCOREBOARD.md + scores.json + settings.json updated.")
     return 0
 
 
