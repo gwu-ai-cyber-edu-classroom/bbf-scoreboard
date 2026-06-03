@@ -1,6 +1,6 @@
 # BBF Scoreboard
 
-_Last updated: <span class="local-time" data-utc="2026-06-03T14:26:41Z">2026-06-03 14:26 UTC</span>_
+_Last updated: <span class="local-time" data-utc="2026-06-03T14:34:44Z">2026-06-03 14:34 UTC</span>_
 
 Ranked by overall **Score** (accumulated). Counts are **confirmed** breaks only — an issue scores once a `/repro-confirmed` comment adds the `valid` label. Column definitions are below the table.
 
@@ -8,6 +8,17 @@ Ranked by overall **Score** (accumulated). Counts are **confirmed** breaks only 
 |---:|---|---:|---|---:|---:|---:|---:|---:|
 | 1 | theshizaali | **10** | success | 1 | 0 | 3 | 0 | 0 |
 | 2 | adamaviv | **-5** | success | 0 | 1 | 0 | 0 | 0 |
+
+## Break feed
+
+Confirmed, fixed, and pending breaks — newest first. Click an issue to read the full report.
+
+| | Issue | From → To | Property | Class | Sev |
+|---|---|---|---|---|---|
+| ✅ | [#1 Denial of Service Attack](https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-adamaviv/issues/1) | theshizaali → adamaviv |  |  |  |
+| 🕓 | [#3 P2: Correctness — non-string JSON title silently coerced …](https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali/issues/3) | adamaviv → theshizaali | P2: Correctness to spec | input-validation | low |
+| 🕓 | [#2 P2: Correctness — redirect silently drops URL path/matrix…](https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali/issues/2) | adamaviv → theshizaali | P2: Correctness to spec | input-validation | low |
+| 🕓 | [#1 P3: Input discipline — /api/links 500 crash on non-dict J…](https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali/issues/1) | adamaviv → theshizaali | P3: Input discipline | input-validation | low |
 
 ## What the columns mean
 

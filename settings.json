@@ -3,5 +3,6 @@
   "liveUpdates": true,
   "refreshSeconds": 30,
   "theme": "dark",
+  "showGraph": true,
   "showChart": true
 }
