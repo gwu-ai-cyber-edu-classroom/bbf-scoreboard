@@ -1,6 +1,6 @@
 {
   "title": "BBF Scoreboard",
-  "liveUpdates": false,
+  "liveUpdates": true,
   "refreshSeconds": 30,
   "dataUpdateMinutes": 5,
   "theme": "dark",
