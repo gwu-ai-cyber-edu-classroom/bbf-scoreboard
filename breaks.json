@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-12T18:42:45Z",
+  "updated": "2026-06-12T18:56:40Z",
   "breaks": [
     {
       "status": "repro",
@@ -28,14 +28,14 @@
       "number": 1
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "hpzhang94",
       "to": "Luna-Xue",
       "prop": "P2: Correctness to spec",
       "cls": "other (business-logic / client\u2013server contract mismatch)",
       "sev": "",
       "discovery": "black-box",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P2: AMF dashboard live view never renders (renderState() calls /amf/state with no token + missing `gnbs` key)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-Luna-Xue/issues/2",
       "number": 2
@@ -652,66 +652,66 @@
       "number": 1
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "Luna-Xue",
       "to": "jianlipan22",
       "prop": "P5: Authorization and output safety",
       "cls": "open-redirect",
       "sev": "",
       "discovery": "black-box",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P5: Open redirect -> shortener 302s to any attacker-supplied URL",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jianlipan22/issues/4",
       "number": 4
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "Luna-Xue",
       "to": "jianlipan22",
       "prop": "P5: Authorization and output safety",
       "cls": "xss",
       "sev": "",
       "discovery": "black-box",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P5: Stored & reflected XSS via name/url (no output escaping)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jianlipan22/issues/3",
       "number": 3
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "Luna-Xue",
       "to": "jianlipan22",
       "prop": "P3: Input discipline",
       "cls": "input-validation",
       "sev": "",
       "discovery": "white-box",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P3: malformed URL crashes redirect -> Werkzeug debug traceback (debug=True)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jianlipan22/issues/2",
       "number": 2
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "Luna-Xue",
       "to": "jianlipan22",
       "prop": "P1: Confidentiality",
       "cls": "idor-authz",
       "sev": "",
       "discovery": "black-box",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P1: /stats/1 and /1 disclose the admin canary (no auth on private link)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jianlipan22/issues/1",
       "number": 1
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "jsong3202",
       "prop": "P3: Input discipline",
       "cls": "Input discipline \u2014 unhandled exception / crash on out-of-scope numeric input. Flask's `<int:...>` converter accepts arbitrarily large integers, which are then passed straight into a SQLite query.",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P3: oversized note id in GET /note/<id> triggers unhandled OverflowError (500)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jsong3202/issues/7",
       "number": 7
@@ -756,14 +756,14 @@
       "number": 1
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "li2cc",
       "prop": "P4: No injection / no code execution",
       "cls": "SQL injection (write / second-order) leading to cross-account data integrity violation. Distinct from the existing `/login` auth-bypass SQLi (#2/#6) and from the single-quote 500 crash (#8): this demonstrates a successful *malicious write* that plants attacker-controlled content into a DIFFERENT user's account.",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P4: create_note SQLi plants notes into another user's account (owner_id spoofing)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-li2cc/issues/12",
       "number": 12
