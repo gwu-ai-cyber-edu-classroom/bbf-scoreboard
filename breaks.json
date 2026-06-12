@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-12T17:57:28Z",
+  "updated": "2026-06-12T18:02:42Z",
   "breaks": [
     {
       "status": "pending",
@@ -25,6 +25,19 @@
       "points": 0,
       "title": "[BREAK] P2: negative quantity at checkout yields a refund (business-logic flaw)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-3rivers-ai/issues/1",
+      "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "heena7sept",
+      "to": "Luna-Xue",
+      "prop": "P2: Correctness to spec",
+      "cls": "Business-logic / correctness defect (client\u2013server contract mismatch). No malformed input needed \u2014 the failure occurs on ordinary, valid use of the documented UI.",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P2: Dashboard live state/audit view never works (renderState 401 + missing gnbs key)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-Luna-Xue/issues/1",
       "number": 1
     },
     {
@@ -120,6 +133,32 @@
     },
     {
       "status": "pending",
+      "from": "heena7sept",
+      "to": "cslongc",
+      "prop": "Uploaded files must be confined to the public `uploads/` directory. The app must never write attacker-controlled content to a path outside `uploads/` (it must not allow overwriting application code, configuration, or protected files such as the canary file).",
+      "cls": "Path traversal on WRITE \u2192 arbitrary file write / file overwrite (integrity violation, with code-execution potential). P4. This is the *write* primitive; it is a different property and direction than the documented `/preview` *read* traversal in issue #1 (which leaks the canary). I am filing it separately because the violated property here is integrity, not confidentiality.",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P4: POST /upload arbitrary file write via ../ filename (escapes uploads/, RCE potential)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-cslongc/issues/5",
+      "number": 5
+    },
+    {
+      "status": "pending",
+      "from": "heena7sept",
+      "to": "cslongc",
+      "prop": "The application must remain available and respond gracefully (no unhandled exceptions / 500s) to a well-formed HTTP request that merely names a file that does not exist. A normal \"not found\" condition must not crash the request handler.",
+      "cls": "Improper error handling / unhandled exception leading to denial of service (availability). P3 \u2014 malformed/invalid input drives the request handler into an uncaught exception.",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P3: GET /preview 500-crashes on missing/invalid name (debug=False, unauthenticated DoS)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-cslongc/issues/4",
+      "number": 4
+    },
+    {
+      "status": "pending",
       "from": "3rivers-ai",
       "to": "cslongc",
       "prop": "P5: Authorization & output safety",
@@ -182,6 +221,32 @@
       "title": "[BREAK] Storage cap with no eviction permanently disables uploads (503)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-dev-gwu/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "heena7sept",
+      "to": "dulalalaladu",
+      "prop": "P2 Correctness",
+      "cls": "Correctness / business-logic data integrity (silent input mutation breaks round-trip fidelity).",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P2: Note title/body silently stripped, not stored/rendered exactly as submitted",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-dulalalaladu/issues/4",
+      "number": 4
+    },
+    {
+      "status": "pending",
+      "from": "heena7sept",
+      "to": "dulalalaladu",
+      "prop": "P2 Correctness",
+      "cls": "Correctness / business-logic data integrity (overscrubbing output filter corrupts legitimate user data).",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P2: Output redaction filter corrupts legitimate user notes containing CANARY_-shaped text",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-dulalalaladu/issues/3",
+      "number": 3
     },
     {
       "status": "pending",
@@ -338,6 +403,19 @@
       "title": "[BREAK] P1: GET /files/<name> serves protected admin file (canary) with no authz",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-heena7sept/issues/2",
       "number": 2
+    },
+    {
+      "status": "pending",
+      "from": "heena7sept",
+      "to": "hpzhang94",
+      "prop": "P3: Input discipline",
+      "cls": "Input discipline \u2014 ordinary malformed input (missing/empty required field) is not handled gracefully and triggers an unhandled content-negotiation error path.",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P3: Missing/empty 'url' on /shorten returns unhandled 415, not graceful 400",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-hpzhang94/issues/7",
+      "number": 7
     },
     {
       "status": "pending",
@@ -536,6 +614,32 @@
     },
     {
       "status": "pending",
+      "from": "heena7sept",
+      "to": "jecossitt",
+      "prop": "P4: Untrusted input must not alter the structure/intent of a backend query or command; an attacker must not authenticate without valid credentials.",
+      "cls": "SQL injection leading to authentication bypass. The login query is built with Python string formatting on untrusted form input.",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P4: SQL injection in /login allows authentication bypass as admin",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jecossitt/issues/2",
+      "number": 2
+    },
+    {
+      "status": "pending",
+      "from": "heena7sept",
+      "to": "jecossitt",
+      "prop": "P5: A user must not be able to read or modify another user's private data (notes are private to their owner; only the owner may read a note).",
+      "cls": "Broken access control / Insecure Direct Object Reference (IDOR). No authentication and no ownership check on note retrieval.",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P5: Unauthenticated IDOR on /notes/<id> leaks admin's private CANARY note",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jecossitt/issues/1",
+      "number": 1
+    },
+    {
+      "status": "pending",
       "from": "Luna-Xue",
       "to": "jianlipan22",
       "prop": "P5: Authorization and output safety",
@@ -587,6 +691,19 @@
       "number": 1
     },
     {
+      "status": "pending",
+      "from": "heena7sept",
+      "to": "jsong3202",
+      "prop": "P3: Input discipline",
+      "cls": "Input discipline \u2014 unhandled exception / crash on out-of-scope numeric input. Flask's `<int:...>` converter accepts arbitrarily large integers, which are then passed straight into a SQLite query.",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P3: oversized note id in GET /note/<id> triggers unhandled OverflowError (500)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jsong3202/issues/7",
+      "number": 7
+    },
+    {
       "status": "repro",
       "from": "imanvk",
       "to": "jsong3202",
@@ -624,6 +741,19 @@
       "title": "[BREAK] P1: GET /note/{id} returns another user's entry incl. canary (IDOR)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jsong3202/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "heena7sept",
+      "to": "li2cc",
+      "prop": "P4: No injection / no code execution",
+      "cls": "SQL injection (write / second-order) leading to cross-account data integrity violation. Distinct from the existing `/login` auth-bypass SQLi (#2/#6) and from the single-quote 500 crash (#8): this demonstrates a successful *malicious write* that plants attacker-controlled content into a DIFFERENT user's account.",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P4: create_note SQLi plants notes into another user's account (owner_id spoofing)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-li2cc/issues/12",
+      "number": 12
     },
     {
       "status": "repro",
@@ -756,6 +886,19 @@
       "number": 1
     },
     {
+      "status": "pending",
+      "from": "AbdunabiRamadan",
+      "to": "mahdin-star",
+      "prop": "P3: Input discipline",
+      "cls": "input-discipline (unhandled exception on out-of-range input)",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P3: GET /task/<id> raises unhandled OverflowError (HTTP 500) for id >= 2^63",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-mahdin-star/issues/6",
+      "number": 6
+    },
+    {
       "status": "repro",
       "from": "3rivers-ai",
       "to": "mahdin-star",
@@ -861,6 +1004,19 @@
     },
     {
       "status": "pending",
+      "from": "heena7sept",
+      "to": "stusteiner",
+      "prop": "P3: Input discipline",
+      "cls": "input-discipline (malformed input -> unhandled exception)",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P3: GET /api/search?q= crashes with unhandled exception (HTTP 500) on a single quote",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-stusteiner/issues/5",
+      "number": 5
+    },
+    {
+      "status": "pending",
       "from": "li2cc",
       "to": "stusteiner",
       "prop": "",
@@ -910,6 +1066,19 @@
       "title": "[BREAK] P1: GET /api/quizzes/{id} & /quiz/{id}/submit leak private quiz answer key (IDOR)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-stusteiner/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "heena7sept",
+      "to": "toluodumosu",
+      "prop": "P2: Correctness to spec",
+      "cls": "Correctness / business-logic + input discipline (no validation that the target post exists or is published before accepting and storing a comment).",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P2: POST /post/<id>/comment accepts and persists comments on non-existent (and unpublished) posts",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-toluodumosu/issues/9",
+      "number": 9
     },
     {
       "status": "pending",
@@ -975,6 +1144,19 @@
       "title": "[BREAK] P1: GET /post/2 returns unpublished draft containing the CANARY_ (IDOR)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-toluodumosu/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "heena7sept",
+      "to": "yxk14",
+      "prop": "P5: Authorization and output safety",
+      "cls": "Stored output-safety / dangerous-scheme injection (XSS via `javascript:` URI). Distinct from the existing IDOR/canary issue (#1) \u2014 this requires no private link and exploits the public `/shorten` -> `/<code>` flow.",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P5: /shorten accepts javascript: URI; /<code> emits it as clickable <a href> (XSS via redirect page)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-yxk14/issues/2",
+      "number": 2
     },
     {
       "status": "pending",
