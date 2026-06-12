@@ -1,15 +1,15 @@
 {
-  "updated": "2026-06-12T17:18:42Z",
+  "updated": "2026-06-12T17:22:13Z",
   "breaks": [
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "ahmet-kurt",
       "prop": "P5: Authorization and output safety",
       "cls": "idor-authz (default/hardcoded credential)",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P5: /admin/links accepts shipped default token (admin authz bypass)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-ahmet-kurt/issues/1",
       "number": 1
@@ -26,6 +26,45 @@
       "title": "[BREAK] P1: Unpublished draft /post/3 leaks the canary (no authorization check)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-arkady5/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "mahdin-star",
+      "to": "imanvk",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "No access control on sensitive metadata endpoints",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-imanvk/issues/5",
+      "number": 5
+    },
+    {
+      "status": "pending",
+      "from": "mahdin-star",
+      "to": "imanvk",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "Missing input validation on POST /shorten",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-imanvk/issues/4",
+      "number": 4
+    },
+    {
+      "status": "pending",
+      "from": "mahdin-star",
+      "to": "imanvk",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "Open redirect / unsafe-scheme redirect from short codes",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-imanvk/issues/3",
+      "number": 3
     },
     {
       "status": "pending",
@@ -81,6 +120,32 @@
     },
     {
       "status": "pending",
+      "from": "ahmet-kurt",
+      "to": "mahdin-star",
+      "prop": "**P5: Authorization and output safety** \u2014 your APP-README claims *\"no open redirect.\"* This is a second, distinct redirect sink (different endpoint and input than the `/login` `next` parameter) that performs no validation at all: the `/login` path routes through `safe_next()`, but this path does not.",
+      "cls": "open-redirect",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P5: open redirect on /task/<id>/toggle via unsanitized Referer header",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-mahdin-star/issues/4",
+      "number": 4
+    },
+    {
+      "status": "pending",
+      "from": "ahmet-kurt",
+      "to": "mahdin-star",
+      "prop": "**P5: Authorization and output safety** \u2014 your APP-README states, under P5, that *\"the login redirect rejects off-site `next` targets (no open redirect).\"* This bypasses that defense.",
+      "cls": "open-redirect",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P5: login next= open redirect via %09 (tab) bypass of safe_next",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-mahdin-star/issues/3",
+      "number": 3
+    },
+    {
+      "status": "pending",
       "from": "heena7sept",
       "to": "mahdin-star",
       "prop": "P5: Authorization and output safety",
@@ -106,14 +171,14 @@
       "number": 1
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "arkady5",
       "to": "rebeccahwa",
       "prop": "P1: Confidentiality",
       "cls": "idor-authz",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P1: GET /drawing/{id} leaks another user's private drawing (IDOR)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-rebeccahwa/issues/1",
       "number": 1
