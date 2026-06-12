@@ -1,6 +1,19 @@
 {
-  "updated": "2026-06-12T17:27:26Z",
+  "updated": "2026-06-12T17:32:09Z",
   "breaks": [
+    {
+      "status": "pending",
+      "from": "AbdunabiRamadan",
+      "to": "ahmet-kurt",
+      "prop": "P5: Authorization and output safety",
+      "cls": "idor-authz (broken access control / default credentials)",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "break-report-ahmet-kurt.md",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-ahmet-kurt/issues/2",
+      "number": 2
+    },
     {
       "status": "repro",
       "from": "heena7sept",
@@ -26,6 +39,19 @@
       "title": "[BREAK] P1: Unpublished draft /post/3 leaks the canary (no authorization check)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-arkady5/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "toluodumosu",
+      "to": "imanvk",
+      "prop": "P3: Input discipline",
+      "cls": "input-validation / crash (unhandled exception)",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P3: GET /<code> crashes with 500 when a short link's target contains CRLF",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-imanvk/issues/6",
+      "number": 6
     },
     {
       "status": "pending",
@@ -91,6 +117,19 @@
       "title": "CANARY secret exposure via public API and redirects",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-imanvk/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "imanvk",
+      "to": "jsong3202",
+      "prop": "P1: Confidentiality",
+      "cls": "auth-bypass (broken authentication \u2014 forgeable session)",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P1: forgeable session cookie (hardcoded secret_key) impersonates any user",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jsong3202/issues/3",
+      "number": 3
     },
     {
       "status": "pending",
