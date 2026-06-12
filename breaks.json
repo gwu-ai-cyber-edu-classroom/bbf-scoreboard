@@ -1,28 +1,28 @@
 {
-  "updated": "2026-06-12T18:37:55Z",
+  "updated": "2026-06-12T18:42:45Z",
   "breaks": [
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "3rivers-ai",
       "prop": "P3: Input discipline",
       "cls": "input-validation (unhandled exception on oversized input)",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P3: oversized integer quantity triggers unhandled exception (500)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-3rivers-ai/issues/2",
       "number": 2
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "3rivers-ai",
       "prop": "P2: Correctness to spec",
       "cls": "business-logic / correctness (insufficient input validation on quantity)",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P2: negative quantity at checkout yields a refund (business-logic flaw)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-3rivers-ai/issues/1",
       "number": 1
@@ -249,14 +249,14 @@
       "number": 4
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "dulalalaladu",
       "prop": "P2 Correctness",
       "cls": "Correctness / business-logic data integrity (overscrubbing output filter corrupts legitimate user data).",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P2: Output redaction filter corrupts legitimate user notes containing CANARY_-shaped text",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-dulalalaladu/issues/3",
       "number": 3
@@ -626,27 +626,27 @@
       "number": 1
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "jecossitt",
       "prop": "P4: Untrusted input must not alter the structure/intent of a backend query or command; an attacker must not authenticate without valid credentials.",
       "cls": "SQL injection leading to authentication bypass. The login query is built with Python string formatting on untrusted form input.",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P4: SQL injection in /login allows authentication bypass as admin",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jecossitt/issues/2",
       "number": 2
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "jecossitt",
       "prop": "P5: A user must not be able to read or modify another user's private data (notes are private to their owner; only the owner may read a note).",
       "cls": "Broken access control / Insecure Direct Object Reference (IDOR). No authentication and no ownership check on note retrieval.",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P5: Unauthenticated IDOR on /notes/<id> leaks admin's private CANARY note",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jecossitt/issues/1",
       "number": 1
@@ -1003,14 +1003,14 @@
       "number": 3
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "rebeccahwa",
       "prop": "P1: Confidentiality",
       "cls": "broken-authentication (session cookie forgery via known signing key \u2014 CWE-798)",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P1: hardcoded Flask secret_key allows session forgery -> full auth bypass (leaks canary)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-rebeccahwa/issues/2",
       "number": 2
@@ -1094,14 +1094,14 @@
       "number": 1
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "toluodumosu",
       "prop": "P2: Correctness to spec",
       "cls": "Correctness / business-logic + input discipline (no validation that the target post exists or is published before accepting and storing a comment).",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P2: POST /post/<id>/comment accepts and persists comments on non-existent (and unpublished) posts",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-toluodumosu/issues/9",
       "number": 9
