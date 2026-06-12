@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-12T17:42:35Z",
+  "updated": "2026-06-12T17:47:22Z",
   "breaks": [
     {
       "status": "pending",
@@ -211,6 +211,97 @@
     },
     {
       "status": "pending",
+      "from": "ahmet-kurt",
+      "to": "heena7sept",
+      "prop": "**P4: No injection / no code execution** \u2014 \"User input must never be executed as code, shell commands, SQL, file paths, or templates. This covers command injection, SQL injection, path traversal, server-side template injection (SSTI), and 'run this for me' requests. The artifact processes input as data, never as instructions.\"",
+      "cls": "path-traversal",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P4: POST /upload arbitrary file write via unsanitized filename (overwrite app.py/canary)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-heena7sept/issues/11",
+      "number": 11
+    },
+    {
+      "status": "pending",
+      "from": "ahmet-kurt",
+      "to": "heena7sept",
+      "prop": "**P5: Authorization and output safety** \u2014 \"user-supplied content **must not run as HTML** (no reflected or stored cross-site scripting).\"",
+      "cls": "xss",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P5: stored XSS via raw inline serving of uploaded HTML/SVG (/files/<name>?raw=1)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-heena7sept/issues/10",
+      "number": 10
+    },
+    {
+      "status": "pending",
+      "from": "ahmet-kurt",
+      "to": "heena7sept",
+      "prop": "**P1: Confidentiality** \u2014 \"The artifact **must never disclose that string in any output channel**: standard output, logs, error messages or stack traces, HTTP responses, rendered HTML, or exported files \u2014 regardless of how the input is phrased.\"",
+      "cls": "leakage",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P1: GET /files/admin_secret.txt serves the protected admin file (canary) with no authz",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-heena7sept/issues/9",
+      "number": 9
+    },
+    {
+      "status": "pending",
+      "from": "ahmet-kurt",
+      "to": "heena7sept",
+      "prop": "**P2: Correctness to spec** \u2014 \"The artifact must do its documented job correctly on valid input... Output that is silently wrong on ordinary, in-scope input is a P2 violation.\"",
+      "cls": "other",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P2: case-only-different upload filenames collide - wrong bytes served, stale size, silent data loss",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-heena7sept/issues/8",
+      "number": 8
+    },
+    {
+      "status": "pending",
+      "from": "ahmet-kurt",
+      "to": "heena7sept",
+      "prop": "**P3: Input discipline** \u2014 \"A crash, hang, or unhandled exception that dumps internal state (paths, configuration, the canary) is a P3 violation.\"",
+      "cls": "leakage",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P3: python app.py ships debug=True - Werkzeug debugger leaks source/paths/PIN on unhandled /upload error",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-heena7sept/issues/7",
+      "number": 7
+    },
+    {
+      "status": "pending",
+      "from": "yxk14",
+      "to": "heena7sept",
+      "prop": "P1: Confidentiality",
+      "cls": "leakage / broken-access-control",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P1: GET /files/admin_secret.txt serves protected file + canary with no auth",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-heena7sept/issues/6",
+      "number": 6
+    },
+    {
+      "status": "pending",
+      "from": "yxk14",
+      "to": "heena7sept",
+      "prop": "P5: Authorization and output safety",
+      "cls": "xss (stored / content-type)",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P5: Stored XSS \u2014 uploaded file served inline with attacker-controlled content-type",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-heena7sept/issues/5",
+      "number": 5
+    },
+    {
+      "status": "pending",
       "from": "3rivers-ai",
       "to": "heena7sept",
       "prop": "P5: Authorization & output safety",
@@ -247,6 +338,58 @@
       "title": "[BREAK] P1: GET /files/<name> serves protected admin file (canary) with no authz",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-heena7sept/issues/2",
       "number": 2
+    },
+    {
+      "status": "pending",
+      "from": "dulalalaladu",
+      "to": "hpzhang94",
+      "prop": "**P5: Authorization and output safety** \u2014 quoting SPEC.md verbatim:",
+      "cls": "`open-redirect`",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P5: Open redirect \u2014 /shorten accepts any scheme/host with no validation",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-hpzhang94/issues/6",
+      "number": 6
+    },
+    {
+      "status": "pending",
+      "from": "dulalalaladu",
+      "to": "hpzhang94",
+      "prop": "**P5: Authorization and output safety** \u2014 quoting SPEC.md verbatim:",
+      "cls": "`xss`",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P5: Stored XSS \u2014 link title rendered unescaped on home page",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-hpzhang94/issues/5",
+      "number": 5
+    },
+    {
+      "status": "pending",
+      "from": "dulalalaladu",
+      "to": "hpzhang94",
+      "prop": "**P1: Confidentiality (the canary)** \u2014 quoting SPEC.md verbatim:",
+      "cls": "`idor-authz`",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P1: Unauthenticated canary disclosure via /api/links/admin and /admin (private link)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-hpzhang94/issues/4",
+      "number": 4
+    },
+    {
+      "status": "pending",
+      "from": "dulalalaladu",
+      "to": "hpzhang94",
+      "prop": "**P4: No injection / no code execution** \u2014 quoting SPEC.md verbatim:",
+      "cls": "`sql-injection`",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P4: SQL injection in /api/links/<code> \u2014 arbitrary DB read + canary exfiltration",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-hpzhang94/issues/3",
+      "number": 3
     },
     {
       "status": "pending",
@@ -431,14 +574,14 @@
       "number": 1
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "cslongc",
       "to": "li2cc",
       "prop": "",
       "cls": "",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 2,
       "title": "[BREAK] Canary secret disclosed through HTTP interface (P1: Confidentiality)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-li2cc/issues/10",
       "number": 10
@@ -561,14 +704,14 @@
       "number": 1
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "3rivers-ai",
       "to": "mahdin-star",
       "prop": "P3: Input discipline",
       "cls": "input-validation",
       "sev": "",
       "discovery": "white-box",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P3: GET /task/<id> returns 500 (unhandled OverflowError) on id >= 2^63",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-mahdin-star/issues/5",
       "number": 5
@@ -587,14 +730,14 @@
       "number": 4
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "ahmet-kurt",
       "to": "mahdin-star",
       "prop": "**P5: Authorization and output safety** \u2014 your APP-README states, under P5, that *\"the login redirect rejects off-site `next` targets (no open redirect).\"* This bypasses that defense.",
       "cls": "open-redirect",
       "sev": "",
       "discovery": "white-box",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P5: login next= open redirect via %09 (tab) bypass of safe_next",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-mahdin-star/issues/3",
       "number": 3
@@ -624,6 +767,19 @@
       "title": "Missing START_APP.md and runtime mismatch make the target hard to run",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-mahdin-star/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "hpzhang94",
+      "to": "rebeccahwa",
+      "prop": "P1: Confidentiality",
+      "cls": "idor-authz",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P1: GET /drawing/{id} missing ownership check leaks admin's private drawing (IDOR)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-rebeccahwa/issues/3",
+      "number": 3
     },
     {
       "status": "pending",
