@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-12T17:22:13Z",
+  "updated": "2026-06-12T17:27:26Z",
   "breaks": [
     {
       "status": "repro",
@@ -120,6 +120,58 @@
     },
     {
       "status": "pending",
+      "from": "dev-gwu",
+      "to": "li2cc",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] Werkzeug debug console exposed on unhandled error (P3, RCE risk)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-li2cc/issues/4",
+      "number": 4
+    },
+    {
+      "status": "pending",
+      "from": "dev-gwu",
+      "to": "li2cc",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] Stored XSS in note title/body (P5)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-li2cc/issues/3",
+      "number": 3
+    },
+    {
+      "status": "pending",
+      "from": "dev-gwu",
+      "to": "li2cc",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] SQL injection auth bypass on /login (P4)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-li2cc/issues/2",
+      "number": 2
+    },
+    {
+      "status": "pending",
+      "from": "dev-gwu",
+      "to": "li2cc",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] IDOR on /notes/<id> discloses the canary to anonymous users (P1+P5)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-li2cc/issues/1",
+      "number": 1
+    },
+    {
+      "status": "pending",
       "from": "ahmet-kurt",
       "to": "mahdin-star",
       "prop": "**P5: Authorization and output safety** \u2014 your APP-README claims *\"no open redirect.\"* This is a second, distinct redirect sink (different endpoint and input than the `/login` `next` parameter) that performs no validation at all: the `/login` path routes through `safe_next()`, but this path does not.",
@@ -181,6 +233,45 @@
       "points": 10,
       "title": "[BREAK] P1: GET /drawing/{id} leaks another user's private drawing (IDOR)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-rebeccahwa/issues/1",
+      "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "jsong3202",
+      "to": "stusteiner",
+      "prop": "P4: No injection / no code execution",
+      "cls": "sql-injection",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P4: SQL injection in GET /api/search?q= (UNION SELECT dumps answer-key column incl. canary)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-stusteiner/issues/3",
+      "number": 3
+    },
+    {
+      "status": "pending",
+      "from": "jsong3202",
+      "to": "stusteiner",
+      "prop": "P4: No injection / no code execution",
+      "cls": "sql-injection",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P4: SQL injection in GET /api/quizzes/{id} (path interpolated into SQL; leaks canary, 500 on bad input)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-stusteiner/issues/2",
+      "number": 2
+    },
+    {
+      "status": "pending",
+      "from": "jsong3202",
+      "to": "stusteiner",
+      "prop": "P1: Confidentiality",
+      "cls": "idor-authz",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P1: GET /api/quizzes/{id} & /quiz/{id}/submit leak private quiz answer key (IDOR)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-stusteiner/issues/1",
       "number": 1
     },
     {
