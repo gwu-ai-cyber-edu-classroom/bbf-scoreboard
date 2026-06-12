@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-12T18:02:42Z",
+  "updated": "2026-06-12T18:07:30Z",
   "breaks": [
     {
       "status": "pending",
@@ -26,6 +26,19 @@
       "title": "[BREAK] P2: negative quantity at checkout yields a refund (business-logic flaw)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-3rivers-ai/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "hpzhang94",
+      "to": "Luna-Xue",
+      "prop": "P2: Correctness to spec",
+      "cls": "other (business-logic / client\u2013server contract mismatch)",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P2: AMF dashboard live view never renders (renderState() calls /amf/state with no token + missing `gnbs` key)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-Luna-Xue/issues/2",
+      "number": 2
     },
     {
       "status": "pending",
@@ -962,6 +975,19 @@
       "title": "Missing START_APP.md and runtime mismatch make the target hard to run",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-mahdin-star/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "AbdunabiRamadan",
+      "to": "rebeccahwa",
+      "prop": "P3: Input discipline",
+      "cls": "input-discipline (unhandled exception on out-of-range input)",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P3: GET /drawing/<id> raises unhandled OverflowError (HTTP 500) for id >= 2^63",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-rebeccahwa/issues/4",
+      "number": 4
     },
     {
       "status": "pending",
