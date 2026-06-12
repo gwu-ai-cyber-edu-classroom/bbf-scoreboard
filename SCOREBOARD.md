@@ -1,6 +1,6 @@
 # BBF Scoreboard
 
-_Last updated: <span class="local-time" data-utc="2026-06-12T17:47:22Z">2026-06-12 17:47 UTC</span>_
+_Last updated: <span class="local-time" data-utc="2026-06-12T17:52:38Z">2026-06-12 17:52 UTC</span>_
 
 Ranked by overall **Score**. Confirmed breaks only — a break counts once a `/repro-confirmed` comment adds the `valid` label.
 
@@ -14,14 +14,14 @@ Ranked by overall **Score**. Confirmed breaks only — a break counts once a `/r
 | 6 | arkady5 | **10** | success | 1 | 0 | 0 | 0 | 0 | 4 |
 | 7 | heena7sept | **10** | success | 1 | 0 | 0 | 0 | 5 | 10 |
 | 8 | imanvk | **10** | success | 1 | 0 | 0 | 0 | 0 | 9 |
-| 9 | Luna-Xue | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
+| 9 | Luna-Xue | **0** | success | 0 | 0 | 0 | 0 | 4 | 0 |
 | 10 | aalbata | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
 | 11 | ahmet-kurt | **0** | success | 1 | 2 | 0 | 0 | 6 | 1 |
 | 12 | bmagda12 | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
 | 13 | dulalalaladu | **0** | success | 0 | 0 | 0 | 0 | 6 | 2 |
 | 14 | hpzhang94 | **0** | success | 0 | 0 | 0 | 0 | 2 | 6 |
 | 15 | hrfu666666 | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
-| 16 | jianlipan22 | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
+| 16 | jianlipan22 | **0** | success | 0 | 0 | 0 | 0 | 0 | 4 |
 | 17 | mallouzi1 | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
 | 18 | stusteiner | **0** | success | 0 | 0 | 0 | 0 | 0 | 4 |
 | 19 | toluodumosu | **0** | success | 0 | 0 | 0 | 0 | 1 | 3 |

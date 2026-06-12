@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-12T17:47:22Z",
+  "updated": "2026-06-12T17:52:38Z",
   "breaks": [
     {
       "status": "pending",
@@ -532,6 +532,58 @@
       "points": 0,
       "title": "CANARY secret exposure via public API and redirects",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-imanvk/issues/1",
+      "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "jianlipan22",
+      "prop": "P5: Authorization and output safety",
+      "cls": "open-redirect",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P5: Open redirect -> shortener 302s to any attacker-supplied URL",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jianlipan22/issues/4",
+      "number": 4
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "jianlipan22",
+      "prop": "P5: Authorization and output safety",
+      "cls": "xss",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P5: Stored & reflected XSS via name/url (no output escaping)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jianlipan22/issues/3",
+      "number": 3
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "jianlipan22",
+      "prop": "P3: Input discipline",
+      "cls": "input-validation",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P3: malformed URL crashes redirect -> Werkzeug debug traceback (debug=True)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jianlipan22/issues/2",
+      "number": 2
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "jianlipan22",
+      "prop": "P1: Confidentiality",
+      "cls": "idor-authz",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P1: /stats/1 and /1 disclose the admin canary (no auth on private link)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jianlipan22/issues/1",
       "number": 1
     },
     {
