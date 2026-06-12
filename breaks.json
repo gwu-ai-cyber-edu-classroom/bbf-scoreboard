@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-12T17:32:09Z",
+  "updated": "2026-06-12T17:37:19Z",
   "breaks": [
     {
       "status": "pending",
@@ -29,6 +29,19 @@
     },
     {
       "status": "pending",
+      "from": "heena7sept",
+      "to": "arkady5",
+      "prop": "P5: Authorization and output safety",
+      "cls": "xss (stored / persistent)",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P5: stored XSS via comments rendered with | safe (no auth/sanitization)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-arkady5/issues/2",
+      "number": 2
+    },
+    {
+      "status": "pending",
       "from": "rebeccahwa",
       "to": "arkady5",
       "prop": "P1: Confidentiality",
@@ -39,6 +52,71 @@
       "title": "[BREAK] P1: Unpublished draft /post/3 leaks the canary (no authorization check)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-arkady5/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "jecossitt",
+      "to": "dev-gwu",
+      "prop": "P3: Input discipline",
+      "cls": "input-validation",
+      "sev": "low",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] Non-ASCII token/csrf_token raises unhandled TypeError -> HTTP 500",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-dev-gwu/issues/2",
+      "number": 2
+    },
+    {
+      "status": "pending",
+      "from": "jecossitt",
+      "to": "dev-gwu",
+      "prop": "P3: Input discipline",
+      "cls": "dos-resource-exhaustion",
+      "sev": "low",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] Storage cap with no eviction permanently disables uploads (503)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-dev-gwu/issues/1",
+      "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "hpzhang94",
+      "to": "imanvk",
+      "prop": "P1: Confidentiality",
+      "cls": "leakage",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P1: /api/links/{code} and /{code} disclose the CANARY via the private admin link (id=7)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-imanvk/issues/9",
+      "number": 9
+    },
+    {
+      "status": "pending",
+      "from": "dulalalaladu",
+      "to": "imanvk",
+      "prop": "**P5: Authorization and output safety** \u2014 quoting SPEC.md verbatim:",
+      "cls": "`open-redirect`",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P5: Open redirect \u2014 /shorten accepts any scheme/host with no validation",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-imanvk/issues/8",
+      "number": 8
+    },
+    {
+      "status": "pending",
+      "from": "dulalalaladu",
+      "to": "imanvk",
+      "prop": "**P1: Confidentiality** \u2014 quoting SPEC.md verbatim:",
+      "cls": "`idor-authz` (information disclosure via enumeration of a resource flagged `private`)",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] P1: Unauthenticated canary disclosure via /api/links/<code> and /<code> (private-link enumeration)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-imanvk/issues/7",
+      "number": 7
     },
     {
       "status": "pending",
@@ -132,30 +210,95 @@
       "number": 3
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "3rivers-ai",
       "to": "jsong3202",
       "prop": "P5: Authorization & output safety",
       "cls": "idor-authz",
       "sev": "",
       "discovery": "white-box",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P5: POST /note/{id}/delete deletes another user's entry (IDOR)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jsong3202/issues/2",
       "number": 2
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "3rivers-ai",
       "to": "jsong3202",
       "prop": "P1: Confidentiality",
       "cls": "idor-authz",
       "sev": "",
       "discovery": "white-box",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P1: GET /note/{id} returns another user's entry incl. canary (IDOR)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jsong3202/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "cslongc",
+      "to": "li2cc",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] Hardcoded Flask secret_key + debug=True enable session forgery & info leak (P5)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-li2cc/issues/9",
+      "number": 9
+    },
+    {
+      "status": "pending",
+      "from": "cslongc",
+      "to": "li2cc",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] create_note crashes (500 + stack trace) on a single quote; SQL injection (P3/P4)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-li2cc/issues/8",
+      "number": 8
+    },
+    {
+      "status": "pending",
+      "from": "cslongc",
+      "to": "li2cc",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] Stored XSS via note title/body rendered without escaping (P5)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-li2cc/issues/7",
+      "number": 7
+    },
+    {
+      "status": "pending",
+      "from": "cslongc",
+      "to": "li2cc",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] SQL injection in /login allows authentication bypass as any user (P4)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-li2cc/issues/6",
+      "number": 6
+    },
+    {
+      "status": "pending",
+      "from": "cslongc",
+      "to": "li2cc",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] IDOR on /notes/<id> discloses any user's note, including the canary (P1)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-li2cc/issues/5",
+      "number": 5
     },
     {
       "status": "pending",
@@ -273,6 +416,19 @@
       "title": "[BREAK] P1: GET /drawing/{id} leaks another user's private drawing (IDOR)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-rebeccahwa/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "li2cc",
+      "to": "stusteiner",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "[BREAK] IDOR + SQLi disclose the CANARY via /api/quizzes/<id> and /api/search",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-stusteiner/issues/4",
+      "number": 4
     },
     {
       "status": "pending",
