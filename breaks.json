@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-12T18:32:38Z",
+  "updated": "2026-06-12T18:37:55Z",
   "breaks": [
     {
       "status": "pending",
@@ -41,14 +41,14 @@
       "number": 2
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "Luna-Xue",
       "prop": "P2: Correctness to spec",
       "cls": "Business-logic / correctness defect (client\u2013server contract mismatch). No malformed input needed \u2014 the failure occurs on ordinary, valid use of the documented UI.",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P2: Dashboard live state/audit view never works (renderState 401 + missing gnbs key)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-Luna-Xue/issues/1",
       "number": 1
@@ -119,14 +119,14 @@
       "number": 3
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "arkady5",
       "prop": "P5: Authorization and output safety",
       "cls": "xss (stored / persistent)",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P5: stored XSS via comments rendered with | safe (no auth/sanitization)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-arkady5/issues/2",
       "number": 2
@@ -236,14 +236,14 @@
       "number": 1
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "dulalalaladu",
       "prop": "P2 Correctness",
       "cls": "Correctness / business-logic data integrity (silent input mutation breaks round-trip fidelity).",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P2: Note title/body silently stripped, not stored/rendered exactly as submitted",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-dulalalaladu/issues/4",
       "number": 4
@@ -418,14 +418,14 @@
       "number": 2
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "hpzhang94",
       "prop": "P3: Input discipline",
       "cls": "Input discipline \u2014 ordinary malformed input (missing/empty required field) is not handled gracefully and triggers an unhandled content-negotiation error path.",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P3: Missing/empty 'url' on /shorten returns unhandled 415, not graceful 400",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-hpzhang94/issues/7",
       "number": 7
@@ -1029,14 +1029,14 @@
       "number": 1
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "stusteiner",
       "prop": "P3: Input discipline",
       "cls": "input-discipline (malformed input -> unhandled exception)",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P3: GET /api/search?q= crashes with unhandled exception (HTTP 500) on a single quote",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-stusteiner/issues/5",
       "number": 5
@@ -1172,14 +1172,14 @@
       "number": 1
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "heena7sept",
       "to": "yxk14",
       "prop": "P5: Authorization and output safety",
       "cls": "Stored output-safety / dangerous-scheme injection (XSS via `javascript:` URI). Distinct from the existing IDOR/canary issue (#1) \u2014 this requires no private link and exploits the public `/shorten` -> `/<code>` flow.",
       "sev": "",
       "discovery": "",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P5: /shorten accepts javascript: URI; /<code> emits it as clickable <a href> (XSS via redirect page)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-yxk14/issues/2",
       "number": 2
