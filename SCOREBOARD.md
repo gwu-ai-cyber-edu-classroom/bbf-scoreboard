@@ -1,6 +1,6 @@
 # BBF Scoreboard
 
-_Last updated: <span class="local-time" data-utc="2026-06-12T17:15:01Z">2026-06-12 17:15 UTC</span>_
+_Last updated: <span class="local-time" data-utc="2026-06-12T17:18:42Z">2026-06-12 17:18 UTC</span>_
 
 Ranked by overall **Score**. Confirmed breaks only — a break counts once a `/repro-confirmed` comment adds the `valid` label.
 
@@ -19,12 +19,12 @@ Ranked by overall **Score**. Confirmed breaks only — a break counts once a `/r
 | 11 | heena7sept | **0** | success | 0 | 0 | 0 | 0 | 2 | 0 |
 | 12 | hpzhang94 | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
 | 13 | hrfu666666 | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
-| 14 | imanvk | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
+| 14 | imanvk | **0** | success | 0 | 0 | 0 | 0 | 0 | 2 |
 | 15 | jecossitt | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
 | 16 | jianlipan22 | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
 | 17 | jsong3202 | **0** | success | 0 | 0 | 0 | 0 | 2 | 2 |
 | 18 | li2cc | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
-| 19 | mahdin-star | **0** | success | 0 | 0 | 0 | 0 | 0 | 2 |
+| 19 | mahdin-star | **0** | success | 0 | 0 | 0 | 0 | 2 | 2 |
 | 20 | mallouzi1 | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
 | 21 | rebeccahwa | **0** | success | 0 | 0 | 0 | 0 | 1 | 1 |
 | 22 | stusteiner | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |

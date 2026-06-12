@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-12T17:15:01Z",
+  "updated": "2026-06-12T17:18:42Z",
   "breaks": [
     {
       "status": "pending",
@@ -25,6 +25,32 @@
       "points": 0,
       "title": "[BREAK] P1: Unpublished draft /post/3 leaks the canary (no authorization check)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-arkady5/issues/1",
+      "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "mahdin-star",
+      "to": "imanvk",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "Host-header reflection / reflected XSS risk in POST /shorten response",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-imanvk/issues/2",
+      "number": 2
+    },
+    {
+      "status": "pending",
+      "from": "mahdin-star",
+      "to": "imanvk",
+      "prop": "",
+      "cls": "",
+      "sev": "",
+      "discovery": "",
+      "points": 0,
+      "title": "CANARY secret exposure via public API and redirects",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-imanvk/issues/1",
       "number": 1
     },
     {
