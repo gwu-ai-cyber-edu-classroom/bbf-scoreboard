@@ -1,19 +1,203 @@
 {
   "teams": [
     {
-      "id": "theshizaali",
-      "name": "theshizaali",
-      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-theshizaali",
+      "id": "3rivers-ai",
+      "name": "3rivers-ai",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-3rivers-ai",
       "members": [
-        "theshizaali"
+        "3rivers-ai"
       ]
     },
     {
-      "id": "adamaviv",
-      "name": "adamaviv",
-      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-adamaviv",
+      "id": "AbdunabiRamadan",
+      "name": "AbdunabiRamadan",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-AbdunabiRamadan",
       "members": [
-        "adamaviv"
+        "AbdunabiRamadan"
+      ]
+    },
+    {
+      "id": "Luna-Xue",
+      "name": "Luna-Xue",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-Luna-Xue",
+      "members": [
+        "Luna-Xue"
+      ]
+    },
+    {
+      "id": "aalbata",
+      "name": "aalbata",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-aalbata",
+      "members": [
+        "aalbata"
+      ]
+    },
+    {
+      "id": "ahmet-kurt",
+      "name": "ahmet-kurt",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-ahmet-kurt",
+      "members": [
+        "ahmet-kurt"
+      ]
+    },
+    {
+      "id": "arkady5",
+      "name": "arkady5",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-arkady5",
+      "members": [
+        "arkady5"
+      ]
+    },
+    {
+      "id": "bmagda12",
+      "name": "bmagda12",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-bmagda12",
+      "members": [
+        "bmagda12"
+      ]
+    },
+    {
+      "id": "cslongc",
+      "name": "cslongc",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-cslongc",
+      "members": [
+        "cslongc"
+      ]
+    },
+    {
+      "id": "dev-gwu",
+      "name": "dev-gwu",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-dev-gwu",
+      "members": [
+        "dev-gwu"
+      ]
+    },
+    {
+      "id": "dulalalaladu",
+      "name": "dulalalaladu",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-dulalalaladu",
+      "members": [
+        "dulalalaladu"
+      ]
+    },
+    {
+      "id": "heena7sept",
+      "name": "heena7sept",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-heena7sept",
+      "members": [
+        "heena7sept"
+      ]
+    },
+    {
+      "id": "hpzhang94",
+      "name": "hpzhang94",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-hpzhang94",
+      "members": [
+        "hpzhang94"
+      ]
+    },
+    {
+      "id": "hrfu666666",
+      "name": "hrfu666666",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-hrfu666666",
+      "members": [
+        "hrfu666666"
+      ]
+    },
+    {
+      "id": "imanvk",
+      "name": "imanvk",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-imanvk",
+      "members": [
+        "imanvk"
+      ]
+    },
+    {
+      "id": "jecossitt",
+      "name": "jecossitt",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-jecossitt",
+      "members": [
+        "jecossitt"
+      ]
+    },
+    {
+      "id": "jianlipan22",
+      "name": "jianlipan22",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-jianlipan22",
+      "members": [
+        "jianlipan22"
+      ]
+    },
+    {
+      "id": "jsong3202",
+      "name": "jsong3202",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-jsong3202",
+      "members": [
+        "jsong3202"
+      ]
+    },
+    {
+      "id": "li2cc",
+      "name": "li2cc",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-li2cc",
+      "members": [
+        "li2cc"
+      ]
+    },
+    {
+      "id": "mahdin-star",
+      "name": "mahdin-star",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-mahdin-star",
+      "members": [
+        "mahdin-star"
+      ]
+    },
+    {
+      "id": "mallouzi1",
+      "name": "mallouzi1",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-mallouzi1",
+      "members": [
+        "mallouzi1"
+      ]
+    },
+    {
+      "id": "rebeccahwa",
+      "name": "rebeccahwa",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-rebeccahwa",
+      "members": [
+        "rebeccahwa"
+      ]
+    },
+    {
+      "id": "stusteiner",
+      "name": "stusteiner",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-stusteiner",
+      "members": [
+        "stusteiner"
+      ]
+    },
+    {
+      "id": "toluodumosu",
+      "name": "toluodumosu",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-toluodumosu",
+      "members": [
+        "toluodumosu"
+      ]
+    },
+    {
+      "id": "yxk14",
+      "name": "yxk14",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-yxk14",
+      "members": [
+        "yxk14"
+      ]
+    },
+    {
+      "id": "zhu3445osu",
+      "name": "zhu3445osu",
+      "repo": "gwu-ai-cyber-edu-classroom/bbf-build-target-zhu3445osu",
+      "members": [
+        "zhu3445osu"
       ]
     }
   ]

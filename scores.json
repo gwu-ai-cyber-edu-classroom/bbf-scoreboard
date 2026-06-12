@@ -1,12 +1,104 @@
 {
   "teams": [
     {
-      "id": "theshizaali",
-      "name": "theshizaali"
+      "id": "3rivers-ai",
+      "name": "3rivers-ai"
     },
     {
-      "id": "adamaviv",
-      "name": "adamaviv"
+      "id": "AbdunabiRamadan",
+      "name": "AbdunabiRamadan"
+    },
+    {
+      "id": "Luna-Xue",
+      "name": "Luna-Xue"
+    },
+    {
+      "id": "aalbata",
+      "name": "aalbata"
+    },
+    {
+      "id": "ahmet-kurt",
+      "name": "ahmet-kurt"
+    },
+    {
+      "id": "arkady5",
+      "name": "arkady5"
+    },
+    {
+      "id": "bmagda12",
+      "name": "bmagda12"
+    },
+    {
+      "id": "cslongc",
+      "name": "cslongc"
+    },
+    {
+      "id": "dev-gwu",
+      "name": "dev-gwu"
+    },
+    {
+      "id": "dulalalaladu",
+      "name": "dulalalaladu"
+    },
+    {
+      "id": "heena7sept",
+      "name": "heena7sept"
+    },
+    {
+      "id": "hpzhang94",
+      "name": "hpzhang94"
+    },
+    {
+      "id": "hrfu666666",
+      "name": "hrfu666666"
+    },
+    {
+      "id": "imanvk",
+      "name": "imanvk"
+    },
+    {
+      "id": "jecossitt",
+      "name": "jecossitt"
+    },
+    {
+      "id": "jianlipan22",
+      "name": "jianlipan22"
+    },
+    {
+      "id": "jsong3202",
+      "name": "jsong3202"
+    },
+    {
+      "id": "li2cc",
+      "name": "li2cc"
+    },
+    {
+      "id": "mahdin-star",
+      "name": "mahdin-star"
+    },
+    {
+      "id": "mallouzi1",
+      "name": "mallouzi1"
+    },
+    {
+      "id": "rebeccahwa",
+      "name": "rebeccahwa"
+    },
+    {
+      "id": "stusteiner",
+      "name": "stusteiner"
+    },
+    {
+      "id": "toluodumosu",
+      "name": "toluodumosu"
+    },
+    {
+      "id": "yxk14",
+      "name": "yxk14"
+    },
+    {
+      "id": "zhu3445osu",
+      "name": "zhu3445osu"
     }
   ],
   "history": [
@@ -1702,6 +1794,36 @@
       "scores": {
         "theshizaali": 5,
         "adamaviv": 15
+      }
+    },
+    {
+      "t": "2026-06-12T16:42:17Z",
+      "scores": {
+        "3rivers-ai": 0,
+        "AbdunabiRamadan": 0,
+        "Luna-Xue": 0,
+        "aalbata": 0,
+        "ahmet-kurt": 0,
+        "arkady5": 0,
+        "bmagda12": 0,
+        "cslongc": 0,
+        "dev-gwu": 0,
+        "dulalalaladu": 0,
+        "heena7sept": 0,
+        "hpzhang94": 0,
+        "hrfu666666": 0,
+        "imanvk": 0,
+        "jecossitt": 0,
+        "jianlipan22": 0,
+        "jsong3202": 0,
+        "li2cc": 0,
+        "mahdin-star": 0,
+        "mallouzi1": 0,
+        "rebeccahwa": 0,
+        "stusteiner": 0,
+        "toluodumosu": 0,
+        "yxk14": 0,
+        "zhu3445osu": 0
       }
     }
   ]
