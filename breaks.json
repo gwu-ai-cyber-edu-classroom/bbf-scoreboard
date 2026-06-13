@@ -1,6 +1,32 @@
 {
-  "updated": "2026-06-12T23:53:55Z",
+  "updated": "2026-06-13T00:43:03Z",
   "breaks": [
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "3rivers-ai",
+      "prop": "P3: Input discipline",
+      "cls": "input-validation",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P3: non-finite/huge quantity at /api/checkout -> 500 and NaN/Infinity totals",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-3rivers-ai/issues/4",
+      "number": 4
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "3rivers-ai",
+      "prop": "P2: Correctness",
+      "cls": "input-validation (business-logic)",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P2: negative quantity at /api/checkout yields a negative total / refund",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-3rivers-ai/issues/3",
+      "number": 3
+    },
     {
       "status": "repro",
       "from": "heena7sept",
@@ -54,6 +80,19 @@
       "number": 1
     },
     {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "ahmet-kurt",
+      "prop": "P5: Authorization and output safety",
+      "cls": "open-redirect",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P5: Open redirect via URL userinfo (@) masks attacker host",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-ahmet-kurt/issues/4",
+      "number": 4
+    },
+    {
       "status": "repro",
       "from": "AbdunabiRamadan",
       "to": "ahmet-kurt",
@@ -91,6 +130,45 @@
       "title": "[BREAK] P5: /admin/links accepts shipped default token (admin authz bypass)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-ahmet-kurt/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "arkady5",
+      "prop": "P5: Authorization & output safety",
+      "cls": "xss",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P5: stored XSS in comments rendered with | safe",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-arkady5/issues/7",
+      "number": 7
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "arkady5",
+      "prop": "P1: Confidentiality",
+      "cls": "idor-authz",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P1: GET /post/3 returns unpublished draft and leaks canary (IDOR)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-arkady5/issues/6",
+      "number": 6
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "arkady5",
+      "prop": "P3: Input discipline",
+      "cls": "leakage",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P3: Werkzeug interactive debugger console exposed at /console (debug=True)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-arkady5/issues/5",
+      "number": 5
     },
     {
       "status": "pending",
@@ -143,6 +221,45 @@
       "title": "[BREAK] P1: Unpublished draft /post/3 leaks the canary (no authorization check)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-arkady5/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "cslongc",
+      "prop": "P5: Authorization & output safety",
+      "cls": "xss",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P5: stored XSS via uploaded HTML/SVG served inline by /preview",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-cslongc/issues/8",
+      "number": 8
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "cslongc",
+      "prop": "P3: Input discipline",
+      "cls": "leakage (debug-mode misconfiguration)",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P3: empty name in /preview triggers debug=True Werkzeug debugger (500)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-cslongc/issues/7",
+      "number": 7
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "cslongc",
+      "prop": "P1: Confidentiality",
+      "cls": "path-traversal",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P1: path traversal in GET /preview?name=../ reads canary",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-cslongc/issues/6",
+      "number": 6
     },
     {
       "status": "pending",
@@ -418,6 +535,71 @@
       "number": 2
     },
     {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "hpzhang94",
+      "prop": "P5: Authorization & output safety",
+      "cls": "open-redirect",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P5: open redirect -- /shorten accepts javascript: and arbitrary schemes",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-hpzhang94/issues/12",
+      "number": 12
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "hpzhang94",
+      "prop": "P5: Authorization & output safety",
+      "cls": "xss",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P5: stored XSS via link title on home page",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-hpzhang94/issues/11",
+      "number": 11
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "hpzhang94",
+      "prop": "P3: Input discipline",
+      "cls": "leakage (debug-mode misconfiguration)",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P3: malformed code triggers debug=True Werkzeug debugger (500)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-hpzhang94/issues/10",
+      "number": 10
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "hpzhang94",
+      "prop": "P1: Confidentiality",
+      "cls": "sql-injection",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P4: SQL injection in /api/links/<code> leaks canary",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-hpzhang94/issues/9",
+      "number": 9
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "hpzhang94",
+      "prop": "P1: Confidentiality",
+      "cls": "idor-authz",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P1: private admin link readable unauthenticated -> canary (is_private ignored)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-hpzhang94/issues/8",
+      "number": 8
+    },
+    {
       "status": "repro",
       "from": "heena7sept",
       "to": "hpzhang94",
@@ -507,6 +689,32 @@
       "title": "[BREAK] P4: SQL injection in GET /api/links/<code> (interpolated SQL; leaks canary, 500 on bad input)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-hpzhang94/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "imanvk",
+      "prop": "P5: Authorization & output safety",
+      "cls": "open-redirect",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P5: open redirect -- /shorten accepts javascript:/data: schemes",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-imanvk/issues/11",
+      "number": 11
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "imanvk",
+      "prop": "P1: Confidentiality",
+      "cls": "idor-authz",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P1: private admin link (id=7) readable unauthenticated -> canary",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-imanvk/issues/10",
+      "number": 10
     },
     {
       "status": "pending",
@@ -624,6 +832,58 @@
       "title": "CANARY secret exposure via public API and redirects",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-imanvk/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "jecossitt",
+      "prop": "P4: Injection",
+      "cls": "sql-injection",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P4: SQL injection in /login allows auth bypass as admin",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jecossitt/issues/6",
+      "number": 6
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "jecossitt",
+      "prop": "P1: Confidentiality",
+      "cls": "idor-authz",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P1: unauthenticated IDOR on /notes/<id> leaks canary",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jecossitt/issues/5",
+      "number": 5
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "jecossitt",
+      "prop": "P5: Authorization and output safety",
+      "cls": "xss",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P5: Stored & reflected XSS via note title/body and username (str.format, no escaping)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jecossitt/issues/4",
+      "number": 4
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "jecossitt",
+      "prop": "P3: Input discipline",
+      "cls": "leakage",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P3: debug=True serves Werkzeug interactive debugger on 500 (missing form field)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jecossitt/issues/3",
+      "number": 3
     },
     {
       "status": "repro",
@@ -754,6 +1014,19 @@
       "title": "[BREAK] P1: GET /note/{id} returns another user's entry incl. canary (IDOR)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jsong3202/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "li2cc",
+      "prop": "P1: Confidentiality",
+      "cls": "policy-bypass",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P1: Weak default admin password (admin123) + no login rate-limit -> canary disclosure",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-li2cc/issues/13",
+      "number": 13
     },
     {
       "status": "repro",
@@ -900,6 +1173,19 @@
     },
     {
       "status": "pending",
+      "from": "Luna-Xue",
+      "to": "mahdin-star",
+      "prop": "P5: Authorization & output safety",
+      "cls": "open-redirect",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P5: open redirect on /task/<id>/toggle via unsanitized Referer header",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-mahdin-star/issues/7",
+      "number": 7
+    },
+    {
+      "status": "pending",
       "from": "AbdunabiRamadan",
       "to": "mahdin-star",
       "prop": "P3: Input discipline",
@@ -978,6 +1264,32 @@
     },
     {
       "status": "pending",
+      "from": "Luna-Xue",
+      "to": "rebeccahwa",
+      "prop": "P1: Confidentiality",
+      "cls": "idor-authz (weak-crypto / session forgery)",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P1: hardcoded weak SECRET_KEY enables session forgery -> admin -> canary",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-rebeccahwa/issues/6",
+      "number": 6
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "rebeccahwa",
+      "prop": "P1: Confidentiality",
+      "cls": "idor-authz",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P1: IDOR on /drawing/<id> leaks admin's private drawing (canary)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-rebeccahwa/issues/5",
+      "number": 5
+    },
+    {
+      "status": "pending",
       "from": "AbdunabiRamadan",
       "to": "rebeccahwa",
       "prop": "P3: Input discipline",
@@ -1027,6 +1339,45 @@
       "title": "[BREAK] P1: GET /drawing/{id} leaks another user's private drawing (IDOR)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-rebeccahwa/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "stusteiner",
+      "prop": "P5: Authorization & output safety",
+      "cls": "idor-authz",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P5: GET /api/quizzes enumerates private quiz metadata",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-stusteiner/issues/8",
+      "number": 8
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "stusteiner",
+      "prop": "P1: Confidentiality",
+      "cls": "sql-injection",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P4: UNION SQL injection in /api/search dumps answer-key column incl. canary",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-stusteiner/issues/7",
+      "number": 7
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "stusteiner",
+      "prop": "P1: Confidentiality",
+      "cls": "idor-authz",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P1: private quiz served unauthenticated via /api/quizzes/2 -> canary (IDOR)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-stusteiner/issues/6",
+      "number": 6
     },
     {
       "status": "repro",
@@ -1092,6 +1443,19 @@
       "title": "[BREAK] P1: GET /api/quizzes/{id} & /quiz/{id}/submit leak private quiz answer key (IDOR)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-stusteiner/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "toluodumosu",
+      "prop": "P3: Input discipline",
+      "cls": "dos-resource-exhaustion",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P3: No size limit on comment fields enables storage/response DoS",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-toluodumosu/issues/10",
+      "number": 10
     },
     {
       "status": "repro",
@@ -1172,6 +1536,45 @@
       "number": 1
     },
     {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "yxk14",
+      "prop": "P5: Authorization & output safety",
+      "cls": "open-redirect",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P5: open redirect -- /shorten accepts javascript: and off-site URLs",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-yxk14/issues/5",
+      "number": 5
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "yxk14",
+      "prop": "P1: Confidentiality",
+      "cls": "idor-authz",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P1: GET /<code> follows private admin link and leaks canary (IDOR)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-yxk14/issues/4",
+      "number": 4
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "yxk14",
+      "prop": "P3: Input discipline",
+      "cls": "input-validation",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P3: CRLF in stored URL crashes redirect with 500 on follow",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-yxk14/issues/3",
+      "number": 3
+    },
+    {
       "status": "repro",
       "from": "heena7sept",
       "to": "yxk14",
@@ -1195,6 +1598,19 @@
       "points": 0,
       "title": "[BREAK] P1: GET /<code> follows private admin link and leaks canary (IDOR, is_private ignored)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-yxk14/issues/1",
+      "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "zhu3445osu",
+      "prop": "P2: Correctness to spec",
+      "cls": "leakage",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P2: /api/quizzes/{id}/submit returns every correct_answer (answer-key leak)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-zhu3445osu/issues/1",
       "number": 1
     }
   ]
