@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-13T00:43:03Z",
+  "updated": "2026-06-13T01:35:35Z",
   "breaks": [
     {
       "status": "pending",
@@ -51,6 +51,19 @@
       "points": 10,
       "title": "[BREAK] P2: negative quantity at checkout yields a refund (business-logic flaw)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-3rivers-ai/issues/1",
+      "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "AbdunabiRamadan",
+      "prop": "P3: Input discipline",
+      "cls": "input-validation",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P3: GET /notes/<id> returns 500 (unhandled OverflowError) for id >= 2^63",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-AbdunabiRamadan/issues/1",
       "number": 1
     },
     {
@@ -353,6 +366,19 @@
       "number": 1
     },
     {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "dulalalaladu",
+      "prop": "P3: Input discipline",
+      "cls": "input-validation",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P3: GET /notes/<id> returns 500 (unhandled OverflowError) for id >= 2^63",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-dulalalaladu/issues/5",
+      "number": 5
+    },
+    {
       "status": "repro",
       "from": "heena7sept",
       "to": "dulalalaladu",
@@ -403,6 +429,19 @@
       "title": "[BREAK] P3: GET /notes/<id> returns 500 (unhandled OverflowError) on id >= 2^63",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-dulalalaladu/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "heena7sept",
+      "prop": "P3: Input discipline",
+      "cls": "input-validation",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P3: oversized filename on POST /upload triggers unhandled OSError (500)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-heena7sept/issues/13",
+      "number": 13
     },
     {
       "status": "repro",
@@ -964,6 +1003,19 @@
       "number": 1
     },
     {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "jsong3202",
+      "prop": "P3: Input discipline",
+      "cls": "input-validation",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P3: GET /note/<id> returns 500 (unhandled OverflowError) for id >= 2^63",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-jsong3202/issues/8",
+      "number": 8
+    },
+    {
       "status": "repro",
       "from": "heena7sept",
       "to": "jsong3202",
@@ -1175,6 +1227,19 @@
       "status": "pending",
       "from": "Luna-Xue",
       "to": "mahdin-star",
+      "prop": "P3: Input discipline",
+      "cls": "input-validation",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P3: GET /task/<id> returns 500 (unhandled OverflowError) for id >= 2^63",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-mahdin-star/issues/8",
+      "number": 8
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "mahdin-star",
       "prop": "P5: Authorization & output safety",
       "cls": "open-redirect",
       "sev": "",
@@ -1261,6 +1326,19 @@
       "title": "Missing START_APP.md and runtime mismatch make the target hard to run",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-mahdin-star/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "rebeccahwa",
+      "prop": "P3: Input discipline",
+      "cls": "input-validation",
+      "sev": "",
+      "discovery": "white-box",
+      "points": 0,
+      "title": "[BREAK] P3: GET /drawing/<id> returns 500 (unhandled OverflowError) for id >= 2^63",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-rebeccahwa/issues/7",
+      "number": 7
     },
     {
       "status": "pending",
@@ -1599,6 +1677,32 @@
       "title": "[BREAK] P1: GET /<code> follows private admin link and leaks canary (IDOR, is_private ignored)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-yxk14/issues/1",
       "number": 1
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "zhu3445osu",
+      "prop": "P3: Input discipline",
+      "cls": "input-validation",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P3: unmatched route 404 turned into 500 by over-broad errorhandler(Exception)",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-zhu3445osu/issues/3",
+      "number": 3
+    },
+    {
+      "status": "pending",
+      "from": "Luna-Xue",
+      "to": "zhu3445osu",
+      "prop": "P3: Input discipline",
+      "cls": "input-validation",
+      "sev": "",
+      "discovery": "black-box",
+      "points": 0,
+      "title": "[BREAK] P3: boolean accepted as integer answer/option index (isinstance(True,int))",
+      "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-zhu3445osu/issues/2",
+      "number": 2
     },
     {
       "status": "pending",
