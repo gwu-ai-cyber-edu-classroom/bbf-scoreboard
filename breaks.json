@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-15T10:40:41Z",
+  "updated": "2026-06-15T12:53:01Z",
   "breaks": [
     {
       "status": "pending",
@@ -1614,40 +1614,40 @@
       "number": 1
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "Luna-Xue",
       "to": "yxk14",
       "prop": "P5: Authorization & output safety",
       "cls": "open-redirect",
       "sev": "",
       "discovery": "black-box",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P5: open redirect -- /shorten accepts javascript: and off-site URLs",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-yxk14/issues/5",
       "number": 5
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "Luna-Xue",
       "to": "yxk14",
       "prop": "P1: Confidentiality",
       "cls": "idor-authz",
       "sev": "",
       "discovery": "black-box",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P1: GET /<code> follows private admin link and leaks canary (IDOR)",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-yxk14/issues/4",
       "number": 4
     },
     {
-      "status": "pending",
+      "status": "repro",
       "from": "Luna-Xue",
       "to": "yxk14",
       "prop": "P3: Input discipline",
       "cls": "input-validation",
       "sev": "",
       "discovery": "black-box",
-      "points": 0,
+      "points": 10,
       "title": "[BREAK] P3: CRLF in stored URL crashes redirect with 500 on follow",
       "url": "https://github.com/gwu-ai-cyber-edu-classroom/bbf-build-target-yxk14/issues/3",
       "number": 3
