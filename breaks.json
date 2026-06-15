@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-15T12:53:01Z",
+  "updated": "2026-06-15T15:02:55Z",
   "breaks": [
     {
       "status": "pending",
@@ -509,7 +509,7 @@
       "number": 7
     },
     {
-      "status": "repro",
+      "status": "fixed",
       "from": "yxk14",
       "to": "heena7sept",
       "prop": "P1: Confidentiality",

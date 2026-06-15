@@ -1,12 +1,12 @@
 # BBF Scoreboard
 
-_Last updated: <span class="local-time" data-utc="2026-06-15T12:53:01Z">2026-06-15 12:53 UTC</span>_
+_Last updated: <span class="local-time" data-utc="2026-06-15T15:02:55Z">2026-06-15 15:02 UTC</span>_
 
 Ranked by overall **Score**. Confirmed breaks only — a break counts once a `/repro-confirmed` comment adds the `valid` label.
 
 | Rank | Team | Score | Build | Landed | Received | High-sev | Fixed | Pending breaks | Pending review |
 |---:|---|---:|---|---:|---:|---:|---:|---:|---:|
-| 1 | heena7sept | **130** | success | 16 | 6 | 0 | 0 | 3 | 5 |
+| 1 | heena7sept | **135** | success | 16 | 6 | 0 | 1 | 3 | 5 |
 | 2 | Luna-Xue | **60** | success | 7 | 2 | 0 | 0 | 37 | 0 |
 | 3 | ahmet-kurt | **50** | success | 6 | 2 | 0 | 0 | 1 | 2 |
 | 4 | dev-gwu | **30** | success | 4 | 2 | 0 | 0 | 0 | 0 |
