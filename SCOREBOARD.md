@@ -1,6 +1,6 @@
 # BBF Scoreboard
 
-_Last updated: <span class="local-time" data-utc="2026-06-24T01:09:52Z">2026-06-24 01:09 UTC</span>_
+_Last updated: <span class="local-time" data-utc="2026-06-24T01:57:51Z">2026-06-24 01:57 UTC</span>_
 
 Ranked by overall **Score**. Confirmed breaks only — a break counts once a `/repro-confirmed` comment adds the `valid` label.
 
@@ -27,7 +27,7 @@ Ranked by overall **Score**. Confirmed breaks only — a break counts once a `/r
 | 19 | dulalalaladu | **-10** | success | 0 | 2 | 0 | 0 | 6 | 3 |
 | 20 | mahdin-star | **-10** | success | 0 | 2 | 0 | 0 | 5 | 6 |
 | 21 | rebeccahwa | **-10** | success | 0 | 2 | 0 | 0 | 1 | 5 |
-| 22 | yxk14 | **-10** | success | 1 | 4 | 0 | 0 | 1 | 1 |
+| 22 | yxk14 | **-10** | error | 1 | 4 | 0 | 0 | 1 | 1 |
 | 23 | jianlipan22 | **-20** | success | 0 | 4 | 0 | 0 | 0 | 0 |
 | 24 | jsong3202 | **-20** | success | 0 | 4 | 0 | 0 | 5 | 1 |
 | 25 | li2cc | **-36** | success | 0 | 11 | 0 | 0 | 1 | 1 |
