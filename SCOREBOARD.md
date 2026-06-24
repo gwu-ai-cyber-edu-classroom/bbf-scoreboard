@@ -1,13 +1,13 @@
 # BBF Scoreboard
 
-_Last updated: <span class="local-time" data-utc="2026-06-24T12:08:29Z">2026-06-24 12:08 UTC</span>_
+_Last updated: <span class="local-time" data-utc="2026-06-24T13:05:01Z">2026-06-24 13:05 UTC</span>_
 
 Ranked by overall **Score**. Confirmed breaks only — a break counts once a `/repro-confirmed` comment adds the `valid` label.
 
 | Rank | Team | Score | Build | Landed | Received | High-sev | Fixed | Pending breaks | Pending review |
 |---:|---|---:|---|---:|---:|---:|---:|---:|---:|
 | 1 | heena7sept | **135** | success | 16 | 6 | 0 | 1 | 3 | 5 |
-| 2 | Luna-Xue | **60** | error | 7 | 2 | 0 | 0 | 37 | 0 |
+| 2 | Luna-Xue | **60** | success | 7 | 2 | 0 | 0 | 37 | 0 |
 | 3 | ahmet-kurt | **50** | success | 6 | 2 | 0 | 0 | 1 | 2 |
 | 4 | dev-gwu | **30** | success | 4 | 2 | 0 | 0 | 0 | 0 |
 | 5 | 3rivers-ai | **20** | success | 3 | 2 | 0 | 0 | 14 | 2 |
@@ -17,7 +17,7 @@ Ranked by overall **Score**. Confirmed breaks only — a break counts once a `/r
 | 9 | jecossitt | **10** | success | 2 | 2 | 0 | 0 | 0 | 4 |
 | 10 | arkady5 | **5** | success | 1 | 1 | 0 | 0 | 0 | 6 |
 | 11 | hpzhang94 | **5** | success | 1 | 1 | 0 | 0 | 2 | 11 |
-| 12 | aalbata | **0** | error | 0 | 0 | 0 | 0 | 0 | 0 |
+| 12 | aalbata | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
 | 13 | bmagda12 | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
 | 14 | hrfu666666 | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
 | 15 | mallouzi1 | **0** | success | 0 | 0 | 0 | 0 | 0 | 0 |
