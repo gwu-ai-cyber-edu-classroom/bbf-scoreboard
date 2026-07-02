@@ -1,6 +1,6 @@
 # BBF Scoreboard
 
-_Last updated: <span class="local-time" data-utc="2026-07-02T10:50:30Z">2026-07-02 10:50 UTC</span>_
+_Last updated: <span class="local-time" data-utc="2026-07-02T11:45:24Z">2026-07-02 11:45 UTC</span>_
 
 Ranked by overall **Score**. Confirmed breaks only — a break counts once a `/repro-confirmed` comment adds the `valid` label.
 
